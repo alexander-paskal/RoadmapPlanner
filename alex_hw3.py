@@ -386,7 +386,7 @@ def main():
 
 
     cspace = get_config_space(robot, *obstacles)
-
+    np.save("cspace_hw3.npy", cspace)
     # plot_configspace(cspace)
     # plt.title("Config Space")
     # plt.show()
@@ -422,7 +422,6 @@ def main():
         plt.pause(0.05)
         ax1.clear()
         ax2.clear()
-
 
 
 if __name__ == '__main__':

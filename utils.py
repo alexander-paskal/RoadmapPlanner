@@ -1,6 +1,8 @@
 from spatialgeometry import Cuboid
 from spatialmath import SE3
 
+
+
 _OBS = None
 def get_obstacles():
     a = 30
@@ -17,5 +19,4 @@ def get_obstacles():
         obstacle3 = Cuboid(scale=[b, c, 1], pose=SE3(e + b / 2, c / 2, 0.5), collision=True)
         obstacle4 = Cuboid(scale=[b, a, 1], pose=SE3(e + b / 2, -d - a / 2, 0.5), collision=True)
         _OBS = [obstacle1, obstacle2, obstacle3, obstacle4]
-
     return _OBS
