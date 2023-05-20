@@ -1,0 +1,67 @@
+<robot name="2link_robot">
+	
+	<material name="black">
+		<color rgba="0 0 0 0.7"/>
+	</material>
+	<material name="white">
+		<color rgba="1 1 1 0.7"/>
+	</material>
+
+	<link name="base"/>
+	<link name="arm1">
+		<visual>
+			<origin rpy="0 1.57 0" xyz = "5 0 0" />
+	        <geometry>
+	          <cylinder radius="0.1" length="10" />
+	        </geometry>
+			<material name="black"/>
+		</visual>
+		<collision>
+			<origin rpy="0 1.57 0" xyz = "0.5 0 0" />
+	        <geometry>
+	          <cylinder radius="0.1" length="10" />
+	        </geometry>
+		</collision>
+	</link>
+
+	<joint name="baseHinge" type="revolute">
+		<axis rpy="0 0 0" xyz="0 0 1"/>
+		<parent link="base"/>
+		<child link="arm1"/>
+		<limit lower="-3.1415" upper="3.1415" effort="1" velocity="2.17"/>
+	</joint>
+
+	<link name="arm2">
+		<visual>
+			<origin rpy="0 1.57 0" xyz = "5 0 0" />
+	        <geometry>
+	          <cylinder radius="0.1" length="10" />
+	        </geometry>
+			<material name="white"/>
+		</visual>
+		<collision>
+			<origin rpy="0 1.57 0" xyz = "5 0 0" />
+	        <geometry>
+	          <cylinder radius="0.1" length="10" />
+	        </geometry>
+		</collision>
+	</link>
+
+	<joint name="interArm" type="revolute">
+		<axis rpy="0 0 0" xyz="0 0 1"/>
+		<parent link="arm1"/>
+		<child link="arm2"/>
+		<origin rpy="0 0 0" xyz="10 0 0"/>
+		<limit lower="-3.0473" upper="3.0473" effort="1" velocity="2.17"/>
+	</joint>
+
+	<link name="endEffector"/>
+
+	<joint name="ee_joint" type="fixed">
+		<parent link="arm2"/>
+		<child link="endEffector"/>
+		<origin rpy="0 0 0" xyz="10 0 0"/>
+	</joint>
+
+</robot>
+
