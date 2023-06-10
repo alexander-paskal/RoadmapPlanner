@@ -41,7 +41,7 @@ def construct_sparse_graph():
 
     for node in intersections:
         for child in DENSE_GRAPH[node]:
-
+            # if child not in intersections:
             int1 = node
             con1 = child
             try:
@@ -64,13 +64,19 @@ def construct_sparse_graph():
             # plt.show()
             #
 
-def plot_graph(graph):
+def plot_graph(graph, weights=None):
     for (u, v) in graph:
         plt.scatter(u, v, c="red", s=6)
 
     for (u, v), children in graph.items():
+
+
         for (u1, v1) in children:
-            plt.plot([u, u1], [v, v1], c="blue", alpha=0.5)
+            linewidth = 1
+            if weights is not None:
+                linewidth = SPARSE_WEIGHTS[(u, v), (u1, v1)] / 50
+                print(linewidth)
+            plt.plot([u, u1], [v, v1], c="blue", alpha=0.5, linewidth=linewidth)
 
     # plt.show()
 
@@ -109,16 +115,17 @@ def main():
                 if arr[u_child, v_child] == 1:
                     DENSE_GRAPH[(u, v)].append((u_child, v_child))
     #
+    # plt.imshow(np.rot90(arr, axes=(0, 1)))
     plot_graph(DENSE_GRAPH)
-    #
-    # ints = extract_intersections(DENSE_GRAPH)
-    # plt.scatter(*np.array(list(ints)).T, c="green", s=30)
-    # print(len(ints))
-    # plt.show()
-
+    # #
+    # # ints = extract_intersections(DENSE_GRAPH)
+    # # plt.scatter(*np.array(list(ints)).T, c="green", s=30)
+    # # print(len(ints))
+    plt.show()
 
     construct_sparse_graph()
-    plot_graph(SPARSE_GRAPH)
+    plot_graph(SPARSE_GRAPH, weights=SPARSE_WEIGHTS)
+    # plot_graph(SPARSE_GRAPH)
     print(len(SPARSE_GRAPH))
     plt.show()
 
