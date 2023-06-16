@@ -217,8 +217,8 @@ if __name__ == '__main__':
     # plt.scatter(*P, c="green", s=30)
     # plt.show()
 
-    start = (17, 302)
-    goal = (161, 24)
+    start = (40,100)
+    goal = (175, 200)
     #print(img[start[0], start[1]])
     #assert 1==0
 
