@@ -67,73 +67,13 @@ class SparseGraph():
 
         return new_graph
 
+    def generate_connectors(self):
+        connectors = dict()
+        for node, children in self.graph.items():
+            for child in children:
 
-def plot_graph(graph, weights=None):
-    for (u, v) in graph:
-        plt.scatter(u, v, c="red", s=6)
+                next_node, _, _ = self._run_to_end(child, node)
 
-    for (u, v), children in graph.items():
+                connectors[(node, next_node)] = child
 
-
-        for (u1, v1) in children:
-            linewidth = 1
-            if weights is not None:
-                linewidth = SPARSE_WEIGHTS[(u, v), (u1, v1)] / 50
-                print(linewidth)
-            plt.plot([u, u1], [v, v1], c="blue", alpha=0.5, linewidth=linewidth)
-
-    # plt.show()
-
-
-def main():
-
-    arr = np.load("skeleton.npy")
-
-
-    H, W = arr.shape
-
-    xx, yy = np.meshgrid(
-            np.arange(H),
-            np.arange(W)
-    )
-
-    inds = np.vstack([xx.flatten(), yy.flatten()]).T
-
-
-    mask = arr.T.flatten()
-
-    dense_nodes = inds[mask]
-
-
-    for node in dense_nodes:
-        u, v = node
-
-        for i in (-1, 0, 1):
-            for j in (-1, 0, 1):
-                if i == 0 and j == 0:
-                    continue
-
-                u_child = u + i
-                v_child = v + j
-
-                if arr[u_child, v_child] == 1:
-                    DENSE_GRAPH[(u, v)].append((u_child, v_child))
-    #
-    # plt.imshow(np.rot90(arr, axes=(0, 1)))
-    # plot_graph(DENSE_GRAPH)
-    # #
-    # # ints = extract_intersections(DENSE_GRAPH)
-    # # plt.scatter(*np.array(list(ints)).T, c="green", s=30)
-    # # print(len(ints))
-    plt.show()
-
-    construct_sparse_graph()
-    plot_graph(SPARSE_GRAPH, weights=SPARSE_WEIGHTS)
-    # plot_graph(SPARSE_GRAPH)
-    print(len(SPARSE_GRAPH))
-    plt.show()
-
-
-
-if __name__ == '__main__':
-    main()
+        return connectors

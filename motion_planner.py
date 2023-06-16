@@ -2,8 +2,9 @@ from skeletonization import skeletonize2d
 import numpy as np
 from collections import defaultdict
 import matplotlib.pyplot as plt
-from skeleton2graph2 import SparseGraph
-from a_star import a_star
+from sparse_graph import SparseGraph
+from a_star import a_star_SPARSE as a_star
+from copy import deepcopy
 
 
 class MotionPlanner:
@@ -165,7 +166,23 @@ class MotionPlanner:
                     print(linewidth)
                 plt.plot([u, u1], [v, v1], c="blue", alpha=0.5, linewidth=linewidth)
 
-        # plt.show()
+    def generate_motion_plan(self, start, goal):
+
+        history = {
+            "dense": deepcopy(self.dense_graph)
+        }
+
+
+        self.add_point_to_dense_graph(start)
+        self.add_point_to_dense_graph(goal)
+
+        new_sparse = self.sparse_graph_from_dense_graph(self.dense_graph)
+
+        sparse_path, dense_path = a_star(start, goal, new_sparse.serialize(), self.dense_graph, new_sparse.generate_connectors())
+
+        self.dense_graph = history["dense"]
+
+        return sparse_path, dense_path
 
 
 if __name__ == '__main__':
@@ -183,9 +200,16 @@ if __name__ == '__main__':
     i = MotionPlanner.create_from_config_image(img, q_start=minq, q_end=maxq)
 
     P = (80, 200)
-    i.add_point_to_dense_graph(P)
-    new_sparse_graph = i.sparse_graph_from_dense_graph(i.dense_graph)
-    i.plot_graph(new_sparse_graph.graph, weights=new_sparse_graph.weights)
+    # i.add_point_to_dense_graph(P)
+    # new_sparse_graph = i.sparse_graph_from_dense_graph(i.dense_graph)
+    # i.plot_graph(new_sparse_graph.graph, weights=new_sparse_graph.weights)
+    #
+    # plt.scatter(*P, c="green", s=30)
+    # plt.show()
 
-    plt.scatter(*P, c="green", s=30)
+    start = (100, 100)
+    goal = (80, 200)
+
+    sparse_path, _ = i.generate_motion_plan(start, goal)
+    plt.plot(*np.array(sparse_path).T)
     plt.show()
