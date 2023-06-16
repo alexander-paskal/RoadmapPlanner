@@ -120,7 +120,7 @@ def main():
                     DENSE_GRAPH[(u, v)].append((u_child, v_child))
     #
     # plt.imshow(np.rot90(arr, axes=(0, 1)))
-    plot_graph(DENSE_GRAPH)
+    # plot_graph(DENSE_GRAPH)
     # #
     # # ints = extract_intersections(DENSE_GRAPH)
     # # plt.scatter(*np.array(list(ints)).T, c="green", s=30)

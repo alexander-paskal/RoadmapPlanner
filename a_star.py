@@ -34,45 +34,46 @@ class PQ(object):
 
 
 # requires the start and end to be added into the SPARSE and DENSE graphs
-def a_star(start, goal, graph):
-    # use PQ
+def a_star_SPARSE(start, goal, SP_Graph, DS_Graph, path_dirct):
+    #use PQ
     # treverse SPARSE GRAPH
 
     parent = {}
-    weight = defaultdict(lambda: float('inf'))
+    weight = defaultdict(lambda:float('inf'))
     close = []
     openPQ = PQ()
-
+    
     weight[start] = 0
     openPQ.insert((start, weight[start]))
-
+    
     while not openPQ.isEmpty():
-        curr, g = openPQ.delete()  # pop the lowest weight node
+        curr, g = openPQ.delete() #pop the lowest weight node
+        
+        close.append(curr) #might need to be moved to end of while loop
 
-        close.append(curr)  # might need to be moved to end of while loop
+        #go thru the children of next node
+        children = SP_Graph[curr]
+        for (c,w) in children:
 
-        # go thru the children of next node
-        children = graph[curr]
-        for (c, w) in children:
-
-            # if the child is goal, return the path from there
-            if c == goal:
+            #if the child is goal, return the path from there
+            if c== goal: 
                 parent[c] = curr
                 print("path found:")
                 sparsePT = buildPath_sparse(start, goal, parent)
-                densePT = buildPath_dense(start, goal, parent, graph)
+                # densePT = []
+                densePT = buildPath_dense(start, goal, parent, DS_Graph, SP_Graph.keys(), path_dirct)
                 return (sparsePT, densePT)
 
-            # goal no found, keep checking children
-            # if the weight of child is greater than the new path, change it
-            EuclideanDist = np.linalg.norm(np.asarray(c) - np.asarray(goal))  # euclidean heuristic
+        #goal no found, keep checking children
+            #if the weight of child is greater than the new path, change it
+            EuclideanDist = np.linalg.norm(np.asarray(c) - np.asarray(goal)) #euclidean heuristic
             tempW = (g + w) + EuclideanDist
-            if (weight[c] > tempW):
+            if (weight[c] > tempW): 
                 weight[c] = tempW
-                parent[c] = curr  # set the parent as path used
+                parent[c] = curr #set the parent as path used
 
                 if c not in close:
-                    openPQ.insert((c, weight[c]))
+                    openPQ.insert((c, weight[c])) 
 
 
 def buildPath_sparse(start, goal, parent):
@@ -85,15 +86,29 @@ def buildPath_sparse(start, goal, parent):
     return path
 
 
-def buildPath_dense(start, goal, parent, graph):
+def buildPath_dense(start, goal, parent, dense_PT, interpt, path_dirct):
     path = []
     cur = goal
-    while cur != start:
+    prev = goal
+    while cur!= start:
         path.append(cur)
-        if (cur in graph):
-            # STILL WORKING
-            cur = parent[cur]
+        # print(cur)
+        if(cur in interpt):
+            prev = cur
+            print(parent[cur], cur)
+            connector = path_dirct[(parent[cur], cur)]
+            if connector == cur:
+                cur = parent[cur]
+                print("here")
+                print(cur)
+            else:
+                cur = connector
+            
         else:
-            cur = parent[cur]
+            curChild = dense_PT[cur]
+            for c in curChild:
+                if c != prev:
+                    cur = c
+            prev = cur
     path.append(start)
     return path
