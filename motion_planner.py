@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from sparse_graph import SparseGraph
 from a_star import a_star_SPARSE as a_star
 from copy import deepcopy
-
+import time
 
 class MotionPlanner:
 
@@ -155,7 +155,7 @@ class MotionPlanner:
     @staticmethod
     def plot_graph(graph, weights=None):
         for (u, v) in graph:
-            plt.scatter(u, v, c="red", s=6)
+            plt.scatter(v, u, c="red", s=6)
 
         for (u, v), children in graph.items():
 
@@ -164,7 +164,7 @@ class MotionPlanner:
                 if weights is not None:
                     linewidth = weights[(u, v), (u1, v1)] / 50
                     print(linewidth)
-                plt.plot([u, u1], [v, v1], c="blue", alpha=0.5, linewidth=linewidth)
+                plt.plot([v, v1], [u, u1], c="blue", alpha=0.5, linewidth=linewidth)
 
     def generate_motion_plan(self, start, goal):
 
@@ -178,6 +178,7 @@ class MotionPlanner:
 
         new_sparse = self.sparse_graph_from_dense_graph(self.dense_graph)
 
+        print(start, goal, type(new_sparse), type(self.dense_graph), type(new_sparse.connectors))
         sparse_path, dense_path = a_star(start, goal, new_sparse.serialize(), self.dense_graph, new_sparse.connectors)
         dense_path = new_sparse.densify_path(sparse_path)
         self.dense_graph = history["dense"]
@@ -195,9 +196,18 @@ if __name__ == '__main__':
     img[~mask] = 0
 
     config_space = np.load("cspace_hw3.npy")
+    fig = plt.figure()
+
+    plt.imshow(img)
+    fig.canvas.draw()
     minq = np.min(config_space[1:, :], axis=1)
     maxq = np.max(config_space[1:, :], axis=1)
+
+    start_time = time.time()
     i = MotionPlanner.create_from_config_image(img, q_start=minq, q_end=maxq)
+    end_time = time.time()
+    print("graph constructed, time elapsed: ", end_time - start_time)
+
 
     P = (80, 200)
     # i.add_point_to_dense_graph(P)
@@ -207,14 +217,27 @@ if __name__ == '__main__':
     # plt.scatter(*P, c="green", s=30)
     # plt.show()
 
-    start = (100, 100)
-    goal = (80, 200)
+    start = (17, 302)
+    goal = (161, 24)
+    #print(img[start[0], start[1]])
+    #assert 1==0
 
+    start_time = time.time()
     sparse_path, dense_path = i.generate_motion_plan(start, goal)
+    end_time = time.time()
 
-    plt.scatter(*np.array(dense_path).T)
+    depth_path_visual = np.array(dense_path) # n x 2
+    depth_path_visual[:,0] = np.array(dense_path)[:,1]
+    depth_path_visual[:,1] = np.array(dense_path)[:,0]
+    #print(depth_path_visual.shape)
+
+    #assert 1==0
+    
+    plt.scatter(*depth_path_visual.T)
+    
     i.plot_graph(i.dense_graph)
-    plt.scatter(*start, c="red")
-    plt.scatter(*goal, c="green")
+    plt.scatter(start[1], start[0], c="red")
+    plt.scatter(goal[1], goal[0], c="green")
+    print("time elapsed: ", end_time - start_time)
     plt.show()
 

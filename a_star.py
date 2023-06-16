@@ -56,12 +56,13 @@ def a_star_SPARSE(start, goal, SP_Graph, DS_Graph, path_dirct):
         for (c,w) in children:
 
             #if the child is goal, return the path from there
-            if c== goal: 
+            if c == goal: 
                 parent[c] = curr
                 print("path found:")
+                print("weight: ", weight[curr])
                 sparsePT = buildPath_sparse(start, goal, parent)
                 densePT = []
-                # densePT = buildPath_dense(start, goal, parent, DS_Graph, SP_Graph.keys(), path_dirct)
+                #densePT = buildPath_dense(start, goal, parent, DS_Graph, SP_Graph.keys(), path_dirct)
                 return (sparsePT, densePT)
 
         #goal no found, keep checking children
@@ -69,12 +70,12 @@ def a_star_SPARSE(start, goal, SP_Graph, DS_Graph, path_dirct):
             EuclideanDist = np.linalg.norm(np.asarray(c) - np.asarray(goal)) #euclidean heuristic
             tempW = (g + w) + EuclideanDist
             if (weight[c] > tempW): 
-                weight[c] = tempW
+                weight[c] = tempW - EuclideanDist
                 parent[c] = curr #set the parent as path used
 
                 if c not in close:
                     openPQ.insert((c, weight[c])) 
-
+    print("not found")
 
 def buildPath_sparse(start, goal, parent):
     path = []
@@ -99,8 +100,8 @@ def buildPath_dense(start, goal, parent, dense_PT, interpt, path_dirct):
             connector = path_dirct[(parent[cur], cur)]
             if connector == cur:
                 cur = parent[cur]
-                print("here")
-                print(cur)
+                #print("here")
+                #print(cur)
             else:
                 cur = connector
             
