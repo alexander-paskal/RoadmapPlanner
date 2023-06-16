@@ -2,60 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
-#checking for each intersection scenario
-MASKS = np.array([
-    [[1, 0, 1],
-     [0, 1, 0],
-     [0, 1, 0]],
-    [[0, 1, 0],
-     [0, 1, 1],
-     [1, 0, 0]],
-    [[0, 0, 1],
-     [1, 1, 0],
-     [0, 0, 1]],
-    [[1, 0, 0],
-     [0, 1, 1],
-     [0, 1, 0]],
-
-    [[0, 1, 0],
-     [0, 1, 0],
-     [1, 0, 1]],
-    [[0, 0, 1],
-     [1, 1, 0],
-     [0, 1, 0]],
-    [[1, 0, 0],
-     [0, 1, 1],
-     [1, 0, 0]],
-    [[0, 1, 0],
-     [1, 1, 0],
-     [0, 0, 1]],
-
-    [[1, 0, 0],
-     [0, 1, 0],
-     [1, 0, 1]],
-    [[1, 0, 1],
-     [0, 1, 0],
-     [1, 0, 0]],
-    [[1, 0, 1],
-     [0, 1, 0],
-     [0, 0, 1]],
-    [[0, 0, 1],
-     [0, 1, 0],
-     [1, 0, 1]],
-
-])
-
-
 #holds each node's children 
 DENSE_GRAPH = defaultdict(list)
     #(u1, v1): {set of children}
 
 SPARSE_GRAPH = {}
 PATH_DIR = {}
+intersections = []
 
 #dense --> intersection points & return SPARSEGRAPH with intersections included
 def extract_intersections(dense_graph):
-    intersections = []
+    # intersections = []
     for node, children in dense_graph.items():
         if len(children) > 2:
             intersections.append(node)
@@ -70,7 +27,7 @@ def extract_intersections(dense_graph):
 
 def connectSPARSE():
     
-    intersections = extract_intersections(DENSE_GRAPH)
+    # intersections = extract_intersections(DENSE_GRAPH)
 
     for inter in intersections: # for each intersection, find the nearby ones
         
@@ -130,8 +87,9 @@ def connectSPARSE():
                     if i==0: parent = curr
                     else: parent = parent
 
-                    if not(c in visited):                     
-                        st.append((c, i+1, parent)) #add the children with 1 level more {can use level 1 children as connectors}
+                    if not(c in visited):
+                        pathcost = np.linalg.norm(np.asarray(c) - np.asarray(curr))                     
+                        st.append((c, i+pathcost, parent)) #add the children with 1 level more {can use level 1 children as connectors}
 
         # connectors = DENSE_GRAPH[inter]
 
@@ -154,48 +112,80 @@ class PQ(object):
     # for popping an element based on Priority
     def delete(self):
         try:
-            max_val = 0
+            min_val = 0
             for i in range(len(self.queue)):
-                if self.queue[i] > self.queue[max_val]:
-                    max_val = i
-            item = self.queue[max_val]
-            del self.queue[max_val]
+                if self.queue[i][1] < self.queue[min_val][1]:
+                    min_val = i
+            item = self.queue[min_val]
+            del self.queue[min_val]
             return item
         except IndexError:
             print()
             exit()
  
 #requires the start and end to be added into the SPARSE and DENSE graphs
-def a_star(start, goal):
+def a_star_SPARSE(start, goal):
     #use PQ
     # treverse SPARSE GRAPH
 
-    path = []
+    parent = {}
+    weight = defaultdict(lambda:float('inf'))
     close = []
     openPQ = PQ()
-
-    openPQ.insert(start)
-
+    
+    weight[start] = 0
+    openPQ.insert((start, weight[start]))
+    
     while not openPQ.isEmpty():
-        curr = openPQ.delete() #pop the lowest weight node
+        curr, g = openPQ.delete() #pop the lowest weight node
+        
+        close.append(curr) #might need to be moved to end of while loop
 
         #go thru the children of next node
         children = SPARSE_GRAPH[curr]
-        for c in children:
-            #if the child is found
+        for (c,w) in children:
+
+            #if the child is goal, return the path from there
             if c== goal: 
-                path.append(goal)
-                print("path found")
-            else:
-                print("check in child")
+                parent[c] = curr
+                print("path found:")
+                sparsePT = buildPath_sparse(start, goal, parent)
+                densePT = buildPath_dense(start, goal, parent)
+                return (sparsePT, densePT)
 
+        #goal no found, keep checking children
+            #if the weight of child is greater than the new path, change it
+            EuclideanDist = np.linalg.norm(np.asarray(c) - np.asarray(goal)) #euclidean heuristic
+            tempW = (g + w) + EuclideanDist
+            if (weight[c] > tempW): 
+                weight[c] = tempW
+                parent[c] = curr #set the parent as path used
 
-    # close.insert()
+                if c not in close:
+                    openPQ.insert((c, weight[c])) 
 
+def buildPath_sparse(start, goal, parent):
+    path = []
+    cur = goal
+    while cur!= start:
+        path.append(cur)
+        cur = parent[cur]
+    path.append(start)
+    return path
 
-        print("done")
-
-
+def buildPath_dense(start, goal, parent):
+    path = []
+    cur = goal
+    while cur!= start:
+        path.append(cur)
+        if(cur in intersections):
+            #STILL WORKING
+            cur = parent[cur]
+        else:
+            cur = parent[cur]
+    path.append(start)
+    return path
+    
 
 #plotting
 def plot_dense_graph():
@@ -261,11 +251,17 @@ def main():
     # plt.show()
 
     connectSPARSE()
-    print(SPARSE_GRAPH)
+    # print(SPARSE_GRAPH)
+
+
+    start = (35, 210)
+    goal = (147, 3)
+    (sparsePT, densePT) = a_star_SPARSE(start, goal)
+    print("sparse: " + str(sparsePT))
+    print("dense: "+ str(densePT))
+
     plot_graph(SPARSE_GRAPH)
     plt.show()
-
-
 
 
 if __name__ == '__main__':
