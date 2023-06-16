@@ -164,6 +164,7 @@ class PQ(object):
         except IndexError:
             print()
             exit()
+
  
 #requires the start and end to be added into the SPARSE and DENSE graphs
 def a_star(start, goal):
