@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import defaultdict
+from a_star import a_star_SPARSE
 
 #holds each node's children 
 DENSE_GRAPH = defaultdict(list)
@@ -19,15 +20,9 @@ def extract_intersections(dense_graph):
     return set(intersections)
 
 def connectSPARSE():
-    
-    # intersections = extract_intersections(DENSE_GRAPH)
-
     for inter in intersections: # for each intersection, find the nearby ones
         
-        visited = [] 
-        
-        # print(inter)
-        
+        visited = []         
         i = 0 #weight
         parent = inter
         st = [] #stack to track the frontier
@@ -101,85 +96,7 @@ class PQ(object):
         except IndexError:
             print()
             exit()
- 
-#requires the start and end to be added into the SPARSE and DENSE graphs
-def a_star_SPARSE(start, goal, SP_Graph, DS_Graph, InterPT):
-    #use PQ
-    # treverse SPARSE GRAPH
-
-    parent = {}
-    weight = defaultdict(lambda:float('inf'))
-    close = []
-    openPQ = PQ()
-    
-    weight[start] = 0
-    openPQ.insert((start, weight[start]))
-    
-    while not openPQ.isEmpty():
-        curr, g = openPQ.delete() #pop the lowest weight node
-        
-        close.append(curr) #might need to be moved to end of while loop
-
-        #go thru the children of next node
-        children = SP_Graph[curr]
-        for (c,w) in children:
-
-            #if the child is goal, return the path from there
-            if c== goal: 
-                parent[c] = curr
-                print("path found:")
-                sparsePT = buildPath_sparse(start, goal, parent)
-                # densePT = []
-                densePT = buildPath_dense(start, goal, parent, DS_Graph, InterPT)
-                return (sparsePT, densePT)
-
-        #goal no found, keep checking children
-            #if the weight of child is greater than the new path, change it
-            EuclideanDist = np.linalg.norm(np.asarray(c) - np.asarray(goal)) #euclidean heuristic
-            tempW = (g + w) + EuclideanDist
-            if (weight[c] > tempW): 
-                weight[c] = tempW
-                parent[c] = curr #set the parent as path used
-
-                if c not in close:
-                    openPQ.insert((c, weight[c])) 
-
-def buildPath_sparse(start, goal, parent):
-    path = []
-    cur = goal
-    while cur!= start:
-        path.append(cur)
-        cur = parent[cur]
-    path.append(start)
-    return path
-
-def buildPath_dense(start, goal, parent, dense_PT, interpt):
-    path = []
-    cur = goal
-    prev = goal
-    while cur!= start:
-        path.append(cur)
-        # print(cur)
-        if(cur in interpt):
-            prev = cur
-            print(parent[cur], cur)
-            connector = PATH_DIR[(parent[cur], cur)]
-            if connector == cur:
-                cur = parent[cur]
-                print("here")
-                print(cur)
-            else:
-                cur = connector
-            
-        else:
-            curChild = dense_PT[cur]
-            for c in curChild:
-                if c != prev:
-                    cur = c
-            prev = cur
-    path.append(start)
-    return path
-    
+   
 
 #plotting
 def plot_dense_graph():
@@ -251,7 +168,7 @@ def main():
 
     start = (35, 210)
     goal = (147, 3)
-    (sparsePT, densePT) = a_star_SPARSE(start, goal, SPARSE_GRAPH, DENSE_GRAPH, intersections)
+    (sparsePT, densePT) = a_star_SPARSE(start, goal, SPARSE_GRAPH, DENSE_GRAPH)
     print("sparse: " + str(sparsePT))
     print("dense: "+ str(densePT))
 
