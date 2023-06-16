@@ -60,8 +60,8 @@ def a_star_SPARSE(start, goal, SP_Graph, DS_Graph, path_dirct):
                 parent[c] = curr
                 print("path found:")
                 sparsePT = buildPath_sparse(start, goal, parent)
-                # densePT = []
-                densePT = buildPath_dense(start, goal, parent, DS_Graph, SP_Graph.keys(), path_dirct)
+                densePT = []
+                # densePT = buildPath_dense(start, goal, parent, DS_Graph, SP_Graph.keys(), path_dirct)
                 return (sparsePT, densePT)
 
         #goal no found, keep checking children

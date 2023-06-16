@@ -179,7 +179,7 @@ class MotionPlanner:
         new_sparse = self.sparse_graph_from_dense_graph(self.dense_graph)
 
         sparse_path, dense_path = a_star(start, goal, new_sparse.serialize(), self.dense_graph, new_sparse.connectors)
-
+        dense_path = new_sparse.densify_path(sparse_path)
         self.dense_graph = history["dense"]
 
         return sparse_path, dense_path
@@ -210,9 +210,10 @@ if __name__ == '__main__':
     start = (100, 100)
     goal = (80, 200)
 
-    sparse_path, _ = i.generate_motion_plan(start, goal)
-    dense_path = i.sparse_graph.densify_path(sparse_path)
-    plt.plot(*np.array(dense_path).T)
+    sparse_path, dense_path = i.generate_motion_plan(start, goal)
+
+    plt.scatter(*np.array(dense_path).T)
+    i.plot_graph(i.dense_graph)
     plt.scatter(*start, c="red")
     plt.scatter(*goal, c="green")
     plt.show()

@@ -14,26 +14,32 @@ class SparseGraph():
         self.dense_graph = dense_graph
         self.intersections = self.extract_intersections(dense_graph)
 
+
+        self.paths = {}
+
+
         for node in self.intersections:
             for child in dense_graph[node]:
                 # if child not in intersections:
                 int1 = node
                 con1 = child
                 try:
-                    con2, int2, weight = self._run_to_end(con1, int1)
+                    con2, int2, weight, path = self._run_to_end(con1, int1)
                 except:
                     print("fail")
                     continue
 
                 self.graph[int1].append(con1)
                 self.weights[(int1, con1)] = np.linalg.norm(np.array(int1) - np.array(con1))
+                self.paths[(int1, con1)] = [int1, con1]
 
                 self.graph[con1].append(con2)
                 self.weights[(con1, con2)] = weight
+                self.paths[(con1, con2)] = path
 
                 self.graph[con2].append(int2)
                 self.weights[(con2, int2)] = np.linalg.norm(np.array(int2) - np.array(con2))
-
+                self.paths[(con2, int2)] = [con2, int2]
 
     def extract_intersections(self, dense_graph):
         intersections = []
@@ -42,18 +48,23 @@ class SparseGraph():
                 intersections.append(node)
         return set(intersections)
 
-    def _run_to_end(self, node, prev, weight=0):
+    def _run_to_end(self, node, prev, weight=0, path=None):
+        if path is None:
+            path = []
+
+        path.append(node)
 
         if node in self.intersections:
             if prev in self.intersections:
                 weight += np.linalg.norm(np.array(node) - np.array(prev))
-            return prev, node, weight
+            return prev, node, weight, path
 
         weight += np.linalg.norm(np.array(node) - np.array(prev))
 
+
         for child in self.dense_graph[node]:
             if child != prev:
-                return self._run_to_end(child, node, weight=weight)
+                return self._run_to_end(child, node, weight=weight, path=path)
 
     def _walk_to_end(self, node, prev, weight=0):
         if node not in self.intersections:
@@ -74,7 +85,6 @@ class SparseGraph():
 
         return new_graph
 
-    @property
     def connectors(self):
         connectors = dict()
         for node, children in self.graph.items():
@@ -86,17 +96,13 @@ class SparseGraph():
 
         return connectors
 
-
     def densify_path(self, path):
         dense_path = []
-
+        # connectors = self.connectors()
         for i in range(1, len(path) - 1):
             node = path[i]
-            dense_path.append(node)
             next_node = path[i + 1]
-            connector = self.connectors[(node, next_node)]
 
-            for dense_node in self._walk_to_end(connector, node):
-                dense_path.append(dense_node)
+            dense_path.extend(self.paths[(node, next_node)])
 
         return dense_path
