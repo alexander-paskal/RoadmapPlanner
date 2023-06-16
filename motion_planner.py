@@ -1,13 +1,16 @@
 from skeletonization import skeletonize2d
 import numpy as np
 from collections import defaultdict
+import matplotlib.pyplot as plt
+from skeleton2graph2 import SparseGraph
+from a_star import a_star
 
 
 class MotionPlanner:
 
     def __init__(self):
         self.config_image = None
-        self.sdf = None
+        self.sdf_im = None
         self.skeleton_im = None
 
         self.sparse_graph = None
@@ -27,7 +30,7 @@ class MotionPlanner:
 
         instance.skeleton_im, instance.sdf_im = cls.skeletonize_config_image(config_image)
         instance.dense_graph = cls.dense_graph_from_skeleton(instance.skeleton_im)
-
+        instance.sparse_graph = cls.sparse_graph_from_dense_graph(instance.dense_graph)
         return instance
 
     @staticmethod
@@ -77,10 +80,9 @@ class MotionPlanner:
 
         return dense_graph
 
-
     @staticmethod
     def sparse_graph_from_dense_graph(dense_graph):
-
+        return SparseGraph(dense_graph)
 
     def pix2q(self, pixels):
 
@@ -120,7 +122,50 @@ class MotionPlanner:
 
         return np.vstack([upixel.squeeze(), vpixel.squeeze()]).T
 
+    def add_point_to_dense_graph(self, point):
+        cur_dis = self.sdf_im[point[0], point[1]]
+        cur_pos = point
+        direction = np.array([[1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]])
+        path = [cur_pos]
+        cur_pos = np.array(cur_pos)
+        while tuple(cur_pos) not in self.dense_graph:
+            gradient = -1
+            t_pos = None
+            for d in direction:
+                c_pos = cur_pos + d
+                c_g = self.sdf_im[c_pos[0], c_pos[1]] - self.sdf_im[cur_pos[0], cur_pos[1]]
+                if c_g > gradient:
+                    gradient = c_g
+                    t_pos = c_pos
+            cur_pos = t_pos
+            path.append(tuple(t_pos))
 
+        path.append(tuple(cur_pos))
+        # reconstruct the path back to the start
+
+        for i, node in enumerate(path[:-1]):
+            next_node = path[i+1]
+
+            if node != next_node:
+
+                self.dense_graph[node].append(next_node)
+                self.dense_graph[next_node].append(node)
+
+    @staticmethod
+    def plot_graph(graph, weights=None):
+        for (u, v) in graph:
+            plt.scatter(u, v, c="red", s=6)
+
+        for (u, v), children in graph.items():
+
+            for (u1, v1) in children:
+                linewidth = 1
+                if weights is not None:
+                    linewidth = weights[(u, v), (u1, v1)] / 50
+                    print(linewidth)
+                plt.plot([u, u1], [v, v1], c="blue", alpha=0.5, linewidth=linewidth)
+
+        # plt.show()
 
 
 if __name__ == '__main__':
@@ -137,4 +182,10 @@ if __name__ == '__main__':
     maxq = np.max(config_space[1:, :], axis=1)
     i = MotionPlanner.create_from_config_image(img, q_start=minq, q_end=maxq)
 
+    P = (80, 200)
+    i.add_point_to_dense_graph(P)
+    new_sparse_graph = i.sparse_graph_from_dense_graph(i.dense_graph)
+    i.plot_graph(new_sparse_graph.graph, weights=new_sparse_graph.weights)
 
+    plt.scatter(*P, c="green", s=30)
+    plt.show()
