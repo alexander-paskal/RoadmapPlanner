@@ -4,7 +4,6 @@ from collections import defaultdict
 
 
 
-
 class SparseGraph():
     def __init__(self, dense_graph):
         # (u1, v1): {set of children}
@@ -56,6 +55,14 @@ class SparseGraph():
             if child != prev:
                 return self._run_to_end(child, node, weight=weight)
 
+    def _walk_to_end(self, node, prev, weight=0):
+        if node not in self.intersections:
+            yield node
+
+            for child in self.dense_graph[node]:
+                if child != prev:
+                    yield from self._walk_to_end(child, node, weight=weight)
+
     def serialize(self):
         """condenses to single dictionary node: (child, weight) """
 
@@ -67,7 +74,8 @@ class SparseGraph():
 
         return new_graph
 
-    def generate_connectors(self):
+    @property
+    def connectors(self):
         connectors = dict()
         for node, children in self.graph.items():
             for child in children:
@@ -77,3 +85,18 @@ class SparseGraph():
                 connectors[(node, next_node)] = child
 
         return connectors
+
+
+    def densify_path(self, path):
+        dense_path = []
+
+        for i in range(1, len(path) - 1):
+            node = path[i]
+            dense_path.append(node)
+            next_node = path[i + 1]
+            connector = self.connectors[(node, next_node)]
+
+            for dense_node in self._walk_to_end(connector, node):
+                dense_path.append(dense_node)
+
+        return dense_path
