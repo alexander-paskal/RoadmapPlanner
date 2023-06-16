@@ -38,8 +38,8 @@ def _fast_skeletonize(cnp.uint8_t [:, ::1] image):
     # this removes the need to handle border cases below
     cdef cnp.uint8_t [:, ::1] skeleton = np.zeros((nrows, ncols),
                                                   dtype=np.uint8)
-    cdef cnp.uint8_t [:, ::1] sdf = np.zeros((nrows, ncols),
-                                                  dtype=np.uint8)
+    cdef cnp.float32_t [:, ::1] sdf = np.zeros((nrows, ncols),
+                                                  dtype=np.float32)
     skeleton[1:-1, 1:-1] = image
     cdef cnp.uint8_t [:, ::1] cleaned_skeleton = skeleton.copy()
 
@@ -96,4 +96,5 @@ def _fast_skeletonize(cnp.uint8_t [:, ::1] image):
                 # is overwritten with the cleaned version
                 skeleton[:, :] = cleaned_skeleton[:, :]
             c_distance += 1
+
     return skeleton.base[1:-1, 1:-1], sdf.base[1:-1, 1:-1]

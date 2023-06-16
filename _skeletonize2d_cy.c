@@ -2096,6 +2096,9 @@ static int __Pyx_ValidateAndInit_memviewslice(
 /* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_5numpy_uint8_t(PyObject *, int writable_flag);
 
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_5numpy_float32_t(PyObject *, int writable_flag);
+
 /* GCCDiagnostics.proto */
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
 #define __Pyx_HAS_GCC_DIAGNOSTIC
@@ -2104,6 +2107,10 @@ static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_n
 /* MemviewDtypeToObject.proto */
 static CYTHON_INLINE PyObject *__pyx_memview_get_nn___pyx_t_5numpy_uint8_t(const char *itemp);
 static CYTHON_INLINE int __pyx_memview_set_nn___pyx_t_5numpy_uint8_t(const char *itemp, PyObject *obj);
+
+/* MemviewDtypeToObject.proto */
+static CYTHON_INLINE PyObject *__pyx_memview_get_nn___pyx_t_5numpy_float32_t(const char *itemp);
+static CYTHON_INLINE int __pyx_memview_set_nn___pyx_t_5numpy_float32_t(const char *itemp, PyObject *obj);
 
 /* RealImag.proto */
 #if CYTHON_CCOMPLEX
@@ -2345,6 +2352,7 @@ static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, PyObject *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_uint8_t = { "uint8_t", NULL, sizeof(__pyx_t_5numpy_uint8_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_uint8_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_uint8_t), 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t = { "float32_t", NULL, sizeof(__pyx_t_5numpy_float32_t), { 0 }, 0, 'R', 0, 0 };
 #define __Pyx_MODULE_NAME "_skeletonize2d_cy"
 extern int __pyx_module_is_main__skeletonize2d_cy;
 int __pyx_module_is_main__skeletonize2d_cy = 0;
@@ -2403,6 +2411,7 @@ static const char __pyx_k_reduce[] = "__reduce__";
 static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
+static const char __pyx_k_float32[] = "float32";
 static const char __pyx_k_fortran[] = "fortran";
 static const char __pyx_k_memview[] = "memview";
 static const char __pyx_k_Ellipsis[] = "Ellipsis";
@@ -2512,6 +2521,7 @@ static PyObject *__pyx_n_s_error;
 static PyObject *__pyx_n_s_fast_skeletonize;
 static PyObject *__pyx_n_s_first_pass;
 static PyObject *__pyx_n_s_flags;
+static PyObject *__pyx_n_s_float32;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_fortran;
 static PyObject *__pyx_n_u_fortran;
@@ -2727,9 +2737,9 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
   PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
   __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_t_11;
+  __Pyx_memviewslice __pyx_t_11 = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_t_12;
-  Py_ssize_t __pyx_t_13;
+  int __pyx_t_13;
   Py_ssize_t __pyx_t_14;
   Py_ssize_t __pyx_t_15;
   Py_ssize_t __pyx_t_16;
@@ -2750,7 +2760,8 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
   Py_ssize_t __pyx_t_31;
   Py_ssize_t __pyx_t_32;
   Py_ssize_t __pyx_t_33;
-  int __pyx_t_34;
+  Py_ssize_t __pyx_t_34;
+  int __pyx_t_35;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3066,7 +3077,7 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
  *     # this removes the need to handle border cases below
  *     cdef cnp.uint8_t [:, ::1] skeleton = np.zeros((nrows, ncols),             # <<<<<<<<<<<<<<
  *                                                   dtype=np.uint8)
- *     cdef cnp.uint8_t [:, ::1] sdf = np.zeros((nrows, ncols),
+ *     cdef cnp.float32_t [:, ::1] sdf = np.zeros((nrows, ncols),
  */
   __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_np); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
@@ -3095,8 +3106,8 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
  *     # this removes the need to handle border cases below
  *     cdef cnp.uint8_t [:, ::1] skeleton = np.zeros((nrows, ncols),
  *                                                   dtype=np.uint8)             # <<<<<<<<<<<<<<
- *     cdef cnp.uint8_t [:, ::1] sdf = np.zeros((nrows, ncols),
- *                                                   dtype=np.uint8)
+ *     cdef cnp.float32_t [:, ::1] sdf = np.zeros((nrows, ncols),
+ *                                                   dtype=np.float32)
  */
   __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -3113,7 +3124,7 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
  *     # this removes the need to handle border cases below
  *     cdef cnp.uint8_t [:, ::1] skeleton = np.zeros((nrows, ncols),             # <<<<<<<<<<<<<<
  *                                                   dtype=np.uint8)
- *     cdef cnp.uint8_t [:, ::1] sdf = np.zeros((nrows, ncols),
+ *     cdef cnp.float32_t [:, ::1] sdf = np.zeros((nrows, ncols),
  */
   __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 39, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
@@ -3129,8 +3140,8 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
   /* "_skeletonize2d_cy.pyx":41
  *     cdef cnp.uint8_t [:, ::1] skeleton = np.zeros((nrows, ncols),
  *                                                   dtype=np.uint8)
- *     cdef cnp.uint8_t [:, ::1] sdf = np.zeros((nrows, ncols),             # <<<<<<<<<<<<<<
- *                                                   dtype=np.uint8)
+ *     cdef cnp.float32_t [:, ::1] sdf = np.zeros((nrows, ncols),             # <<<<<<<<<<<<<<
+ *                                                   dtype=np.float32)
  *     skeleton[1:-1, 1:-1] = image
  */
   __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_np); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 41, __pyx_L1_error)
@@ -3158,8 +3169,8 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
 
   /* "_skeletonize2d_cy.pyx":42
  *                                                   dtype=np.uint8)
- *     cdef cnp.uint8_t [:, ::1] sdf = np.zeros((nrows, ncols),
- *                                                   dtype=np.uint8)             # <<<<<<<<<<<<<<
+ *     cdef cnp.float32_t [:, ::1] sdf = np.zeros((nrows, ncols),
+ *                                                   dtype=np.float32)             # <<<<<<<<<<<<<<
  *     skeleton[1:-1, 1:-1] = image
  *     cdef cnp.uint8_t [:, ::1] cleaned_skeleton = skeleton.copy()
  */
@@ -3167,7 +3178,7 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_np); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_uint8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_float32); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_dtype, __pyx_t_5) < 0) __PYX_ERR(0, 42, __pyx_L1_error)
@@ -3176,8 +3187,8 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
   /* "_skeletonize2d_cy.pyx":41
  *     cdef cnp.uint8_t [:, ::1] skeleton = np.zeros((nrows, ncols),
  *                                                   dtype=np.uint8)
- *     cdef cnp.uint8_t [:, ::1] sdf = np.zeros((nrows, ncols),             # <<<<<<<<<<<<<<
- *                                                   dtype=np.uint8)
+ *     cdef cnp.float32_t [:, ::1] sdf = np.zeros((nrows, ncols),             # <<<<<<<<<<<<<<
+ *                                                   dtype=np.float32)
  *     skeleton[1:-1, 1:-1] = image
  */
   __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_7, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 41, __pyx_L1_error)
@@ -3185,15 +3196,15 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_5numpy_uint8_t(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_5numpy_float32_t(__pyx_t_5, PyBUF_WRITABLE); if (unlikely(!__pyx_t_11.memview)) __PYX_ERR(0, 41, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_v_sdf = __pyx_t_10;
-  __pyx_t_10.memview = NULL;
-  __pyx_t_10.data = NULL;
+  __pyx_v_sdf = __pyx_t_11;
+  __pyx_t_11.memview = NULL;
+  __pyx_t_11.data = NULL;
 
   /* "_skeletonize2d_cy.pyx":43
- *     cdef cnp.uint8_t [:, ::1] sdf = np.zeros((nrows, ncols),
- *                                                   dtype=np.uint8)
+ *     cdef cnp.float32_t [:, ::1] sdf = np.zeros((nrows, ncols),
+ *                                                   dtype=np.float32)
  *     skeleton[1:-1, 1:-1] = image             # <<<<<<<<<<<<<<
  *     cdef cnp.uint8_t [:, ::1] cleaned_skeleton = skeleton.copy()
  * 
@@ -3201,13 +3212,13 @@ static PyObject *__pyx_pf_17_skeletonize2d_cy__fast_skeletonize(CYTHON_UNUSED Py
   __pyx_t_10.data = __pyx_v_skeleton.data;
   __pyx_t_10.memview = __pyx_v_skeleton.memview;
   __PYX_INC_MEMVIEW(&__pyx_t_10, 0);
-  __pyx_t_11 = -1;
+  __pyx_t_12 = -1;
   if (unlikely(__pyx_memoryview_slice_memviewslice(
     &__pyx_t_10,
     __pyx_v_skeleton.shape[0], __pyx_v_skeleton.strides[0], __pyx_v_skeleton.suboffsets[0],
     0,
     0,
-    &__pyx_t_11,
+    &__pyx_t_12,
     1,
     -1L,
     0,
@@ -3224,7 +3235,7 @@ if (unlikely(__pyx_memoryview_slice_memviewslice(
     __pyx_v_skeleton.shape[1], __pyx_v_skeleton.strides[1], __pyx_v_skeleton.suboffsets[1],
     1,
     1,
-    &__pyx_t_11,
+    &__pyx_t_12,
     1,
     -1L,
     0,
@@ -3242,7 +3253,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
   __pyx_t_10.data = NULL;
 
   /* "_skeletonize2d_cy.pyx":44
- *                                                   dtype=np.uint8)
+ *                                                   dtype=np.float32)
  *     skeleton[1:-1, 1:-1] = image
  *     cdef cnp.uint8_t [:, ::1] cleaned_skeleton = skeleton.copy()             # <<<<<<<<<<<<<<
  * 
@@ -3285,8 +3296,8 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  * 
  */
         while (1) {
-          __pyx_t_12 = (__pyx_v_pixel_removed != 0);
-          if (!__pyx_t_12) break;
+          __pyx_t_13 = (__pyx_v_pixel_removed != 0);
+          if (!__pyx_t_13) break;
 
           /* "_skeletonize2d_cy.pyx":52
  *     with nogil:
@@ -3324,9 +3335,9 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                         # all set pixels ...
  */
             __pyx_t_3 = (__pyx_v_nrows - 1);
-            __pyx_t_13 = __pyx_t_3;
-            for (__pyx_t_14 = 1; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
-              __pyx_v_row = __pyx_t_14;
+            __pyx_t_14 = __pyx_t_3;
+            for (__pyx_t_15 = 1; __pyx_t_15 < __pyx_t_14; __pyx_t_15+=1) {
+              __pyx_v_row = __pyx_t_15;
 
               /* "_skeletonize2d_cy.pyx":64
  *                 first_pass = (pass_num == 0)
@@ -3335,10 +3346,10 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                         # all set pixels ...
  * 
  */
-              __pyx_t_15 = (__pyx_v_ncols - 1);
-              __pyx_t_16 = __pyx_t_15;
-              for (__pyx_t_17 = 1; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
-                __pyx_v_col = __pyx_t_17;
+              __pyx_t_16 = (__pyx_v_ncols - 1);
+              __pyx_t_17 = __pyx_t_16;
+              for (__pyx_t_18 = 1; __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
+                __pyx_v_col = __pyx_t_18;
 
                 /* "_skeletonize2d_cy.pyx":67
  *                         # all set pixels ...
@@ -3347,23 +3358,23 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                             # are correlated with a kernel
  *                             # (coefficients spread around here ...)
  */
-                __pyx_t_18 = __pyx_v_row;
-                __pyx_t_19 = __pyx_v_col;
-                __pyx_t_11 = -1;
-                if (__pyx_t_18 < 0) {
-                  __pyx_t_18 += __pyx_v_skeleton.shape[0];
-                  if (unlikely(__pyx_t_18 < 0)) __pyx_t_11 = 0;
-                } else if (unlikely(__pyx_t_18 >= __pyx_v_skeleton.shape[0])) __pyx_t_11 = 0;
+                __pyx_t_19 = __pyx_v_row;
+                __pyx_t_20 = __pyx_v_col;
+                __pyx_t_12 = -1;
                 if (__pyx_t_19 < 0) {
-                  __pyx_t_19 += __pyx_v_skeleton.shape[1];
-                  if (unlikely(__pyx_t_19 < 0)) __pyx_t_11 = 1;
-                } else if (unlikely(__pyx_t_19 >= __pyx_v_skeleton.shape[1])) __pyx_t_11 = 1;
-                if (unlikely(__pyx_t_11 != -1)) {
-                  __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                  __pyx_t_19 += __pyx_v_skeleton.shape[0];
+                  if (unlikely(__pyx_t_19 < 0)) __pyx_t_12 = 0;
+                } else if (unlikely(__pyx_t_19 >= __pyx_v_skeleton.shape[0])) __pyx_t_12 = 0;
+                if (__pyx_t_20 < 0) {
+                  __pyx_t_20 += __pyx_v_skeleton.shape[1];
+                  if (unlikely(__pyx_t_20 < 0)) __pyx_t_12 = 1;
+                } else if (unlikely(__pyx_t_20 >= __pyx_v_skeleton.shape[1])) __pyx_t_12 = 1;
+                if (unlikely(__pyx_t_12 != -1)) {
+                  __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                   __PYX_ERR(0, 67, __pyx_L4_error)
                 }
-                __pyx_t_12 = ((*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_18 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_19)) ))) != 0);
-                if (__pyx_t_12) {
+                __pyx_t_13 = ((*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_19 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_20)) ))) != 0);
+                if (__pyx_t_13) {
 
                   /* "_skeletonize2d_cy.pyx":76
  *                             # "connectivity type"
@@ -3372,19 +3383,19 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                             2 * skeleton[row - 1, col] +
  *                                             4 * skeleton[row - 1, col + 1] +
  */
-                  __pyx_t_19 = (__pyx_v_row - 1);
-                  __pyx_t_18 = (__pyx_v_col - 1);
-                  __pyx_t_11 = -1;
+                  __pyx_t_20 = (__pyx_v_row - 1);
+                  __pyx_t_19 = (__pyx_v_col - 1);
+                  __pyx_t_12 = -1;
+                  if (__pyx_t_20 < 0) {
+                    __pyx_t_20 += __pyx_v_skeleton.shape[0];
+                    if (unlikely(__pyx_t_20 < 0)) __pyx_t_12 = 0;
+                  } else if (unlikely(__pyx_t_20 >= __pyx_v_skeleton.shape[0])) __pyx_t_12 = 0;
                   if (__pyx_t_19 < 0) {
-                    __pyx_t_19 += __pyx_v_skeleton.shape[0];
-                    if (unlikely(__pyx_t_19 < 0)) __pyx_t_11 = 0;
-                  } else if (unlikely(__pyx_t_19 >= __pyx_v_skeleton.shape[0])) __pyx_t_11 = 0;
-                  if (__pyx_t_18 < 0) {
-                    __pyx_t_18 += __pyx_v_skeleton.shape[1];
-                    if (unlikely(__pyx_t_18 < 0)) __pyx_t_11 = 1;
-                  } else if (unlikely(__pyx_t_18 >= __pyx_v_skeleton.shape[1])) __pyx_t_11 = 1;
-                  if (unlikely(__pyx_t_11 != -1)) {
-                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                    __pyx_t_19 += __pyx_v_skeleton.shape[1];
+                    if (unlikely(__pyx_t_19 < 0)) __pyx_t_12 = 1;
+                  } else if (unlikely(__pyx_t_19 >= __pyx_v_skeleton.shape[1])) __pyx_t_12 = 1;
+                  if (unlikely(__pyx_t_12 != -1)) {
+                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                     __PYX_ERR(0, 76, __pyx_L4_error)
                   }
 
@@ -3395,19 +3406,19 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                             4 * skeleton[row - 1, col + 1] +
  *                                             8 * skeleton[row, col + 1] +
  */
-                  __pyx_t_20 = (__pyx_v_row - 1);
-                  __pyx_t_21 = __pyx_v_col;
-                  __pyx_t_11 = -1;
-                  if (__pyx_t_20 < 0) {
-                    __pyx_t_20 += __pyx_v_skeleton.shape[0];
-                    if (unlikely(__pyx_t_20 < 0)) __pyx_t_11 = 0;
-                  } else if (unlikely(__pyx_t_20 >= __pyx_v_skeleton.shape[0])) __pyx_t_11 = 0;
+                  __pyx_t_21 = (__pyx_v_row - 1);
+                  __pyx_t_22 = __pyx_v_col;
+                  __pyx_t_12 = -1;
                   if (__pyx_t_21 < 0) {
-                    __pyx_t_21 += __pyx_v_skeleton.shape[1];
-                    if (unlikely(__pyx_t_21 < 0)) __pyx_t_11 = 1;
-                  } else if (unlikely(__pyx_t_21 >= __pyx_v_skeleton.shape[1])) __pyx_t_11 = 1;
-                  if (unlikely(__pyx_t_11 != -1)) {
-                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                    __pyx_t_21 += __pyx_v_skeleton.shape[0];
+                    if (unlikely(__pyx_t_21 < 0)) __pyx_t_12 = 0;
+                  } else if (unlikely(__pyx_t_21 >= __pyx_v_skeleton.shape[0])) __pyx_t_12 = 0;
+                  if (__pyx_t_22 < 0) {
+                    __pyx_t_22 += __pyx_v_skeleton.shape[1];
+                    if (unlikely(__pyx_t_22 < 0)) __pyx_t_12 = 1;
+                  } else if (unlikely(__pyx_t_22 >= __pyx_v_skeleton.shape[1])) __pyx_t_12 = 1;
+                  if (unlikely(__pyx_t_12 != -1)) {
+                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                     __PYX_ERR(0, 77, __pyx_L4_error)
                   }
 
@@ -3418,19 +3429,19 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                             8 * skeleton[row, col + 1] +
  *                                             16 * skeleton[row + 1, col + 1] +
  */
-                  __pyx_t_22 = (__pyx_v_row - 1);
-                  __pyx_t_23 = (__pyx_v_col + 1);
-                  __pyx_t_11 = -1;
-                  if (__pyx_t_22 < 0) {
-                    __pyx_t_22 += __pyx_v_skeleton.shape[0];
-                    if (unlikely(__pyx_t_22 < 0)) __pyx_t_11 = 0;
-                  } else if (unlikely(__pyx_t_22 >= __pyx_v_skeleton.shape[0])) __pyx_t_11 = 0;
+                  __pyx_t_23 = (__pyx_v_row - 1);
+                  __pyx_t_24 = (__pyx_v_col + 1);
+                  __pyx_t_12 = -1;
                   if (__pyx_t_23 < 0) {
-                    __pyx_t_23 += __pyx_v_skeleton.shape[1];
-                    if (unlikely(__pyx_t_23 < 0)) __pyx_t_11 = 1;
-                  } else if (unlikely(__pyx_t_23 >= __pyx_v_skeleton.shape[1])) __pyx_t_11 = 1;
-                  if (unlikely(__pyx_t_11 != -1)) {
-                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                    __pyx_t_23 += __pyx_v_skeleton.shape[0];
+                    if (unlikely(__pyx_t_23 < 0)) __pyx_t_12 = 0;
+                  } else if (unlikely(__pyx_t_23 >= __pyx_v_skeleton.shape[0])) __pyx_t_12 = 0;
+                  if (__pyx_t_24 < 0) {
+                    __pyx_t_24 += __pyx_v_skeleton.shape[1];
+                    if (unlikely(__pyx_t_24 < 0)) __pyx_t_12 = 1;
+                  } else if (unlikely(__pyx_t_24 >= __pyx_v_skeleton.shape[1])) __pyx_t_12 = 1;
+                  if (unlikely(__pyx_t_12 != -1)) {
+                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                     __PYX_ERR(0, 78, __pyx_L4_error)
                   }
 
@@ -3441,19 +3452,19 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                             16 * skeleton[row + 1, col + 1] +
  *                                             32 * skeleton[row + 1, col] +
  */
-                  __pyx_t_24 = __pyx_v_row;
-                  __pyx_t_25 = (__pyx_v_col + 1);
-                  __pyx_t_11 = -1;
-                  if (__pyx_t_24 < 0) {
-                    __pyx_t_24 += __pyx_v_skeleton.shape[0];
-                    if (unlikely(__pyx_t_24 < 0)) __pyx_t_11 = 0;
-                  } else if (unlikely(__pyx_t_24 >= __pyx_v_skeleton.shape[0])) __pyx_t_11 = 0;
+                  __pyx_t_25 = __pyx_v_row;
+                  __pyx_t_26 = (__pyx_v_col + 1);
+                  __pyx_t_12 = -1;
                   if (__pyx_t_25 < 0) {
-                    __pyx_t_25 += __pyx_v_skeleton.shape[1];
-                    if (unlikely(__pyx_t_25 < 0)) __pyx_t_11 = 1;
-                  } else if (unlikely(__pyx_t_25 >= __pyx_v_skeleton.shape[1])) __pyx_t_11 = 1;
-                  if (unlikely(__pyx_t_11 != -1)) {
-                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                    __pyx_t_25 += __pyx_v_skeleton.shape[0];
+                    if (unlikely(__pyx_t_25 < 0)) __pyx_t_12 = 0;
+                  } else if (unlikely(__pyx_t_25 >= __pyx_v_skeleton.shape[0])) __pyx_t_12 = 0;
+                  if (__pyx_t_26 < 0) {
+                    __pyx_t_26 += __pyx_v_skeleton.shape[1];
+                    if (unlikely(__pyx_t_26 < 0)) __pyx_t_12 = 1;
+                  } else if (unlikely(__pyx_t_26 >= __pyx_v_skeleton.shape[1])) __pyx_t_12 = 1;
+                  if (unlikely(__pyx_t_12 != -1)) {
+                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                     __PYX_ERR(0, 79, __pyx_L4_error)
                   }
 
@@ -3464,19 +3475,19 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                             32 * skeleton[row + 1, col] +
  *                                             64 * skeleton[row + 1, col - 1] +
  */
-                  __pyx_t_26 = (__pyx_v_row + 1);
-                  __pyx_t_27 = (__pyx_v_col + 1);
-                  __pyx_t_11 = -1;
-                  if (__pyx_t_26 < 0) {
-                    __pyx_t_26 += __pyx_v_skeleton.shape[0];
-                    if (unlikely(__pyx_t_26 < 0)) __pyx_t_11 = 0;
-                  } else if (unlikely(__pyx_t_26 >= __pyx_v_skeleton.shape[0])) __pyx_t_11 = 0;
+                  __pyx_t_27 = (__pyx_v_row + 1);
+                  __pyx_t_28 = (__pyx_v_col + 1);
+                  __pyx_t_12 = -1;
                   if (__pyx_t_27 < 0) {
-                    __pyx_t_27 += __pyx_v_skeleton.shape[1];
-                    if (unlikely(__pyx_t_27 < 0)) __pyx_t_11 = 1;
-                  } else if (unlikely(__pyx_t_27 >= __pyx_v_skeleton.shape[1])) __pyx_t_11 = 1;
-                  if (unlikely(__pyx_t_11 != -1)) {
-                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                    __pyx_t_27 += __pyx_v_skeleton.shape[0];
+                    if (unlikely(__pyx_t_27 < 0)) __pyx_t_12 = 0;
+                  } else if (unlikely(__pyx_t_27 >= __pyx_v_skeleton.shape[0])) __pyx_t_12 = 0;
+                  if (__pyx_t_28 < 0) {
+                    __pyx_t_28 += __pyx_v_skeleton.shape[1];
+                    if (unlikely(__pyx_t_28 < 0)) __pyx_t_12 = 1;
+                  } else if (unlikely(__pyx_t_28 >= __pyx_v_skeleton.shape[1])) __pyx_t_12 = 1;
+                  if (unlikely(__pyx_t_12 != -1)) {
+                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                     __PYX_ERR(0, 80, __pyx_L4_error)
                   }
 
@@ -3487,19 +3498,19 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                             64 * skeleton[row + 1, col - 1] +
  *                                             128 * skeleton[row, col - 1]]
  */
-                  __pyx_t_28 = (__pyx_v_row + 1);
-                  __pyx_t_29 = __pyx_v_col;
-                  __pyx_t_11 = -1;
-                  if (__pyx_t_28 < 0) {
-                    __pyx_t_28 += __pyx_v_skeleton.shape[0];
-                    if (unlikely(__pyx_t_28 < 0)) __pyx_t_11 = 0;
-                  } else if (unlikely(__pyx_t_28 >= __pyx_v_skeleton.shape[0])) __pyx_t_11 = 0;
+                  __pyx_t_29 = (__pyx_v_row + 1);
+                  __pyx_t_30 = __pyx_v_col;
+                  __pyx_t_12 = -1;
                   if (__pyx_t_29 < 0) {
-                    __pyx_t_29 += __pyx_v_skeleton.shape[1];
-                    if (unlikely(__pyx_t_29 < 0)) __pyx_t_11 = 1;
-                  } else if (unlikely(__pyx_t_29 >= __pyx_v_skeleton.shape[1])) __pyx_t_11 = 1;
-                  if (unlikely(__pyx_t_11 != -1)) {
-                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                    __pyx_t_29 += __pyx_v_skeleton.shape[0];
+                    if (unlikely(__pyx_t_29 < 0)) __pyx_t_12 = 0;
+                  } else if (unlikely(__pyx_t_29 >= __pyx_v_skeleton.shape[0])) __pyx_t_12 = 0;
+                  if (__pyx_t_30 < 0) {
+                    __pyx_t_30 += __pyx_v_skeleton.shape[1];
+                    if (unlikely(__pyx_t_30 < 0)) __pyx_t_12 = 1;
+                  } else if (unlikely(__pyx_t_30 >= __pyx_v_skeleton.shape[1])) __pyx_t_12 = 1;
+                  if (unlikely(__pyx_t_12 != -1)) {
+                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                     __PYX_ERR(0, 81, __pyx_L4_error)
                   }
 
@@ -3510,19 +3521,19 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                             128 * skeleton[row, col - 1]]
  * 
  */
-                  __pyx_t_30 = (__pyx_v_row + 1);
-                  __pyx_t_31 = (__pyx_v_col - 1);
-                  __pyx_t_11 = -1;
-                  if (__pyx_t_30 < 0) {
-                    __pyx_t_30 += __pyx_v_skeleton.shape[0];
-                    if (unlikely(__pyx_t_30 < 0)) __pyx_t_11 = 0;
-                  } else if (unlikely(__pyx_t_30 >= __pyx_v_skeleton.shape[0])) __pyx_t_11 = 0;
+                  __pyx_t_31 = (__pyx_v_row + 1);
+                  __pyx_t_32 = (__pyx_v_col - 1);
+                  __pyx_t_12 = -1;
                   if (__pyx_t_31 < 0) {
-                    __pyx_t_31 += __pyx_v_skeleton.shape[1];
-                    if (unlikely(__pyx_t_31 < 0)) __pyx_t_11 = 1;
-                  } else if (unlikely(__pyx_t_31 >= __pyx_v_skeleton.shape[1])) __pyx_t_11 = 1;
-                  if (unlikely(__pyx_t_11 != -1)) {
-                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                    __pyx_t_31 += __pyx_v_skeleton.shape[0];
+                    if (unlikely(__pyx_t_31 < 0)) __pyx_t_12 = 0;
+                  } else if (unlikely(__pyx_t_31 >= __pyx_v_skeleton.shape[0])) __pyx_t_12 = 0;
+                  if (__pyx_t_32 < 0) {
+                    __pyx_t_32 += __pyx_v_skeleton.shape[1];
+                    if (unlikely(__pyx_t_32 < 0)) __pyx_t_12 = 1;
+                  } else if (unlikely(__pyx_t_32 >= __pyx_v_skeleton.shape[1])) __pyx_t_12 = 1;
+                  if (unlikely(__pyx_t_12 != -1)) {
+                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                     __PYX_ERR(0, 82, __pyx_L4_error)
                   }
 
@@ -3533,19 +3544,19 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  * 
  *                             if (neighbors == 0):
  */
-                  __pyx_t_32 = __pyx_v_row;
-                  __pyx_t_33 = (__pyx_v_col - 1);
-                  __pyx_t_11 = -1;
-                  if (__pyx_t_32 < 0) {
-                    __pyx_t_32 += __pyx_v_skeleton.shape[0];
-                    if (unlikely(__pyx_t_32 < 0)) __pyx_t_11 = 0;
-                  } else if (unlikely(__pyx_t_32 >= __pyx_v_skeleton.shape[0])) __pyx_t_11 = 0;
+                  __pyx_t_33 = __pyx_v_row;
+                  __pyx_t_34 = (__pyx_v_col - 1);
+                  __pyx_t_12 = -1;
                   if (__pyx_t_33 < 0) {
-                    __pyx_t_33 += __pyx_v_skeleton.shape[1];
-                    if (unlikely(__pyx_t_33 < 0)) __pyx_t_11 = 1;
-                  } else if (unlikely(__pyx_t_33 >= __pyx_v_skeleton.shape[1])) __pyx_t_11 = 1;
-                  if (unlikely(__pyx_t_11 != -1)) {
-                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                    __pyx_t_33 += __pyx_v_skeleton.shape[0];
+                    if (unlikely(__pyx_t_33 < 0)) __pyx_t_12 = 0;
+                  } else if (unlikely(__pyx_t_33 >= __pyx_v_skeleton.shape[0])) __pyx_t_12 = 0;
+                  if (__pyx_t_34 < 0) {
+                    __pyx_t_34 += __pyx_v_skeleton.shape[1];
+                    if (unlikely(__pyx_t_34 < 0)) __pyx_t_12 = 1;
+                  } else if (unlikely(__pyx_t_34 >= __pyx_v_skeleton.shape[1])) __pyx_t_12 = 1;
+                  if (unlikely(__pyx_t_12 != -1)) {
+                    __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                     __PYX_ERR(0, 83, __pyx_L4_error)
                   }
 
@@ -3556,7 +3567,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                             2 * skeleton[row - 1, col] +
  *                                             4 * skeleton[row - 1, col + 1] +
  */
-                  __pyx_v_neighbors = (__pyx_v_lut[((((((((*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_19 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_18)) ))) + (2 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_20 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_21)) ))))) + (4 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_22 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_23)) ))))) + (8 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_24 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_25)) ))))) + (16 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_26 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_27)) ))))) + (32 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_28 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_29)) ))))) + (64 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_30 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_31)) ))))) + (0x80 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_32 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_33)) )))))]);
+                  __pyx_v_neighbors = (__pyx_v_lut[((((((((*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_20 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_19)) ))) + (2 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_21 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_22)) ))))) + (4 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_23 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_24)) ))))) + (8 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_25 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_26)) ))))) + (16 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_27 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_28)) ))))) + (32 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_29 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_30)) ))))) + (64 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_31 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_32)) ))))) + (0x80 * (*((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_skeleton.data + __pyx_t_33 * __pyx_v_skeleton.strides[0]) )) + __pyx_t_34)) )))))]);
 
                   /* "_skeletonize2d_cy.pyx":85
  *                                             128 * skeleton[row, col - 1]]
@@ -3565,8 +3576,8 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                 continue
  *                             elif ((neighbors == 3) or
  */
-                  __pyx_t_12 = ((__pyx_v_neighbors == 0) != 0);
-                  if (__pyx_t_12) {
+                  __pyx_t_13 = ((__pyx_v_neighbors == 0) != 0);
+                  if (__pyx_t_13) {
 
                     /* "_skeletonize2d_cy.pyx":86
  * 
@@ -3593,10 +3604,10 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                   (neighbors == 1 and first_pass) or
  *                                   (neighbors == 2 and not first_pass)):
  */
-                  __pyx_t_34 = ((__pyx_v_neighbors == 3) != 0);
-                  if (!__pyx_t_34) {
+                  __pyx_t_35 = ((__pyx_v_neighbors == 3) != 0);
+                  if (!__pyx_t_35) {
                   } else {
-                    __pyx_t_12 = __pyx_t_34;
+                    __pyx_t_13 = __pyx_t_35;
                     goto __pyx_L16_bool_binop_done;
                   }
 
@@ -3607,15 +3618,15 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                   (neighbors == 2 and not first_pass)):
  *                                 # Remove the pixel
  */
-                  __pyx_t_34 = ((__pyx_v_neighbors == 1) != 0);
-                  if (!__pyx_t_34) {
+                  __pyx_t_35 = ((__pyx_v_neighbors == 1) != 0);
+                  if (!__pyx_t_35) {
                     goto __pyx_L18_next_or;
                   } else {
                   }
-                  __pyx_t_34 = (__pyx_v_first_pass != 0);
-                  if (!__pyx_t_34) {
+                  __pyx_t_35 = (__pyx_v_first_pass != 0);
+                  if (!__pyx_t_35) {
                   } else {
-                    __pyx_t_12 = __pyx_t_34;
+                    __pyx_t_13 = __pyx_t_35;
                     goto __pyx_L16_bool_binop_done;
                   }
                   __pyx_L18_next_or:;
@@ -3627,14 +3638,14 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                 # Remove the pixel
  *                                 cleaned_skeleton[row, col] = 0
  */
-                  __pyx_t_34 = ((__pyx_v_neighbors == 2) != 0);
-                  if (__pyx_t_34) {
+                  __pyx_t_35 = ((__pyx_v_neighbors == 2) != 0);
+                  if (__pyx_t_35) {
                   } else {
-                    __pyx_t_12 = __pyx_t_34;
+                    __pyx_t_13 = __pyx_t_35;
                     goto __pyx_L16_bool_binop_done;
                   }
-                  __pyx_t_34 = ((!(__pyx_v_first_pass != 0)) != 0);
-                  __pyx_t_12 = __pyx_t_34;
+                  __pyx_t_35 = ((!(__pyx_v_first_pass != 0)) != 0);
+                  __pyx_t_13 = __pyx_t_35;
                   __pyx_L16_bool_binop_done:;
 
                   /* "_skeletonize2d_cy.pyx":87
@@ -3644,7 +3655,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                   (neighbors == 1 and first_pass) or
  *                                   (neighbors == 2 and not first_pass)):
  */
-                  if (__pyx_t_12) {
+                  if (__pyx_t_13) {
 
                     /* "_skeletonize2d_cy.pyx":91
  *                                   (neighbors == 2 and not first_pass)):
@@ -3653,22 +3664,22 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                 sdf[row, col] = c_distance
  *                                 pixel_removed = True
  */
-                    __pyx_t_33 = __pyx_v_row;
-                    __pyx_t_32 = __pyx_v_col;
-                    __pyx_t_11 = -1;
+                    __pyx_t_34 = __pyx_v_row;
+                    __pyx_t_33 = __pyx_v_col;
+                    __pyx_t_12 = -1;
+                    if (__pyx_t_34 < 0) {
+                      __pyx_t_34 += __pyx_v_cleaned_skeleton.shape[0];
+                      if (unlikely(__pyx_t_34 < 0)) __pyx_t_12 = 0;
+                    } else if (unlikely(__pyx_t_34 >= __pyx_v_cleaned_skeleton.shape[0])) __pyx_t_12 = 0;
                     if (__pyx_t_33 < 0) {
-                      __pyx_t_33 += __pyx_v_cleaned_skeleton.shape[0];
-                      if (unlikely(__pyx_t_33 < 0)) __pyx_t_11 = 0;
-                    } else if (unlikely(__pyx_t_33 >= __pyx_v_cleaned_skeleton.shape[0])) __pyx_t_11 = 0;
-                    if (__pyx_t_32 < 0) {
-                      __pyx_t_32 += __pyx_v_cleaned_skeleton.shape[1];
-                      if (unlikely(__pyx_t_32 < 0)) __pyx_t_11 = 1;
-                    } else if (unlikely(__pyx_t_32 >= __pyx_v_cleaned_skeleton.shape[1])) __pyx_t_11 = 1;
-                    if (unlikely(__pyx_t_11 != -1)) {
-                      __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                      __pyx_t_33 += __pyx_v_cleaned_skeleton.shape[1];
+                      if (unlikely(__pyx_t_33 < 0)) __pyx_t_12 = 1;
+                    } else if (unlikely(__pyx_t_33 >= __pyx_v_cleaned_skeleton.shape[1])) __pyx_t_12 = 1;
+                    if (unlikely(__pyx_t_12 != -1)) {
+                      __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                       __PYX_ERR(0, 91, __pyx_L4_error)
                     }
-                    *((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_cleaned_skeleton.data + __pyx_t_33 * __pyx_v_cleaned_skeleton.strides[0]) )) + __pyx_t_32)) )) = 0;
+                    *((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_cleaned_skeleton.data + __pyx_t_34 * __pyx_v_cleaned_skeleton.strides[0]) )) + __pyx_t_33)) )) = 0;
 
                     /* "_skeletonize2d_cy.pyx":92
  *                                 # Remove the pixel
@@ -3677,22 +3688,22 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                                 pixel_removed = True
  * 
  */
-                    __pyx_t_32 = __pyx_v_row;
-                    __pyx_t_33 = __pyx_v_col;
-                    __pyx_t_11 = -1;
-                    if (__pyx_t_32 < 0) {
-                      __pyx_t_32 += __pyx_v_sdf.shape[0];
-                      if (unlikely(__pyx_t_32 < 0)) __pyx_t_11 = 0;
-                    } else if (unlikely(__pyx_t_32 >= __pyx_v_sdf.shape[0])) __pyx_t_11 = 0;
+                    __pyx_t_33 = __pyx_v_row;
+                    __pyx_t_34 = __pyx_v_col;
+                    __pyx_t_12 = -1;
                     if (__pyx_t_33 < 0) {
-                      __pyx_t_33 += __pyx_v_sdf.shape[1];
-                      if (unlikely(__pyx_t_33 < 0)) __pyx_t_11 = 1;
-                    } else if (unlikely(__pyx_t_33 >= __pyx_v_sdf.shape[1])) __pyx_t_11 = 1;
-                    if (unlikely(__pyx_t_11 != -1)) {
-                      __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_11);
+                      __pyx_t_33 += __pyx_v_sdf.shape[0];
+                      if (unlikely(__pyx_t_33 < 0)) __pyx_t_12 = 0;
+                    } else if (unlikely(__pyx_t_33 >= __pyx_v_sdf.shape[0])) __pyx_t_12 = 0;
+                    if (__pyx_t_34 < 0) {
+                      __pyx_t_34 += __pyx_v_sdf.shape[1];
+                      if (unlikely(__pyx_t_34 < 0)) __pyx_t_12 = 1;
+                    } else if (unlikely(__pyx_t_34 >= __pyx_v_sdf.shape[1])) __pyx_t_12 = 1;
+                    if (unlikely(__pyx_t_12 != -1)) {
+                      __Pyx_RaiseBufferIndexErrorNogil(__pyx_t_12);
                       __PYX_ERR(0, 92, __pyx_L4_error)
                     }
-                    *((__pyx_t_5numpy_uint8_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_uint8_t *) ( /* dim=0 */ (__pyx_v_sdf.data + __pyx_t_32 * __pyx_v_sdf.strides[0]) )) + __pyx_t_33)) )) = __pyx_v_c_distance;
+                    *((__pyx_t_5numpy_float32_t *) ( /* dim=1 */ ((char *) (((__pyx_t_5numpy_float32_t *) ( /* dim=0 */ (__pyx_v_sdf.data + __pyx_t_33 * __pyx_v_sdf.strides[0]) )) + __pyx_t_34)) )) = __pyx_v_c_distance;
 
                     /* "_skeletonize2d_cy.pyx":93
  *                                 cleaned_skeleton[row, col] = 0
@@ -3729,7 +3740,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                 # is overwritten with the cleaned version
  *                 skeleton[:, :] = cleaned_skeleton[:, :]             # <<<<<<<<<<<<<<
  *             c_distance += 1
- *     return skeleton.base[1:-1, 1:-1], sdf.base[1:-1, 1:-1]
+ * 
  */
             if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_cleaned_skeleton, __pyx_v_skeleton, 2, 2, 0) < 0)) __PYX_ERR(0, 97, __pyx_L4_error)
           }
@@ -3738,6 +3749,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
  *                 # is overwritten with the cleaned version
  *                 skeleton[:, :] = cleaned_skeleton[:, :]
  *             c_distance += 1             # <<<<<<<<<<<<<<
+ * 
  *     return skeleton.base[1:-1, 1:-1], sdf.base[1:-1, 1:-1]
  */
           __pyx_v_c_distance = (__pyx_v_c_distance + 1);
@@ -3770,29 +3782,29 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
       }
   }
 
-  /* "_skeletonize2d_cy.pyx":99
- *                 skeleton[:, :] = cleaned_skeleton[:, :]
+  /* "_skeletonize2d_cy.pyx":100
  *             c_distance += 1
+ * 
  *     return skeleton.base[1:-1, 1:-1], sdf.base[1:-1, 1:-1]             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_skeleton, 2, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_uint8_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_uint8_t, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_5 = __pyx_memoryview_fromslice(__pyx_v_skeleton, 2, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_uint8_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_uint8_t, 0);; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_6, __pyx_tuple__2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_6, __pyx_tuple__2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_sdf, 2, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_uint8_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_uint8_t, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_6 = __pyx_memoryview_fromslice(__pyx_v_sdf, 2, (PyObject *(*)(char *)) __pyx_memview_get_nn___pyx_t_5numpy_float32_t, (int (*)(char *, PyObject *)) __pyx_memview_set_nn___pyx_t_5numpy_float32_t, 0);; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_base); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_base); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_7, __pyx_tuple__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_7, __pyx_tuple__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5);
@@ -3820,6 +3832,7 @@ if (unlikely(__pyx_memoryview_copy_contents(__pyx_v_image, __pyx_t_10, 2, 2, 0) 
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
   __PYX_XDEC_MEMVIEW(&__pyx_t_10, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_11, 1);
   __Pyx_AddTraceback("_skeletonize2d_cy._fast_skeletonize", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -18707,6 +18720,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_fast_skeletonize, __pyx_k_fast_skeletonize, sizeof(__pyx_k_fast_skeletonize), 0, 0, 1, 1},
   {&__pyx_n_s_first_pass, __pyx_k_first_pass, sizeof(__pyx_k_first_pass), 0, 0, 1, 1},
   {&__pyx_n_s_flags, __pyx_k_flags, sizeof(__pyx_k_flags), 0, 0, 1, 1},
+  {&__pyx_n_s_float32, __pyx_k_float32, sizeof(__pyx_k_float32), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 0, 1, 1},
   {&__pyx_n_u_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 1, 0, 1},
@@ -18795,15 +18809,15 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "_skeletonize2d_cy.pyx":99
- *                 skeleton[:, :] = cleaned_skeleton[:, :]
+  /* "_skeletonize2d_cy.pyx":100
  *             c_distance += 1
+ * 
  *     return skeleton.base[1:-1, 1:-1], sdf.base[1:-1, 1:-1]             # <<<<<<<<<<<<<<
  */
-  __pyx_slice_ = PySlice_New(__pyx_int_1, __pyx_int_neg_1, Py_None); if (unlikely(!__pyx_slice_)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_slice_ = PySlice_New(__pyx_int_1, __pyx_int_neg_1, Py_None); if (unlikely(!__pyx_slice_)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice_);
   __Pyx_GIVEREF(__pyx_slice_);
-  __pyx_tuple__2 = PyTuple_Pack(2, __pyx_slice_, __pyx_slice_); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(2, __pyx_slice_, __pyx_slice_); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
@@ -22797,6 +22811,29 @@ __pyx_fail:
     return result;
 }
 
+/* ObjectToMemviewSlice */
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn___pyx_t_5numpy_float32_t(PyObject *obj, int writable_flag) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_FOLLOW), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
+                                                 (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 2,
+                                                 &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
+}
+
 /* CIntFromPyVerify */
   #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
@@ -22828,6 +22865,18 @@ static CYTHON_INLINE int __pyx_memview_set_nn___pyx_t_5numpy_uint8_t(const char 
     if ((value == ((npy_uint8)-1)) && PyErr_Occurred())
         return 0;
     *(__pyx_t_5numpy_uint8_t *) itemp = value;
+    return 1;
+}
+
+/* MemviewDtypeToObject */
+  static CYTHON_INLINE PyObject *__pyx_memview_get_nn___pyx_t_5numpy_float32_t(const char *itemp) {
+    return (PyObject *) PyFloat_FromDouble(*(__pyx_t_5numpy_float32_t *) itemp);
+}
+static CYTHON_INLINE int __pyx_memview_set_nn___pyx_t_5numpy_float32_t(const char *itemp, PyObject *obj) {
+    __pyx_t_5numpy_float32_t value = __pyx_PyFloat_AsFloat(obj);
+    if ((value == ((npy_float32)-1)) && PyErr_Occurred())
+        return 0;
+    *(__pyx_t_5numpy_float32_t *) itemp = value;
     return 1;
 }
 
