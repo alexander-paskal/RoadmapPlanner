@@ -177,7 +177,7 @@ def main():
                 if arr[u_child, v_child] == 1:
                     DENSE_GRAPH[(u, v)].append((u_child, v_child))
 
-    # plot_dense_graph()
+    plot_dense_graph()
 
     # ints = extract_intersections(DENSE_GRAPH)
     # plt.scatter(*np.array(ints).T, c="green", s=30)
