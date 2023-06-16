@@ -14,15 +14,8 @@ intersections = []
 def extract_intersections(dense_graph):
     # intersections = []
     for node, children in dense_graph.items():
-        if len(children) > 2:
+        if (len(children) > 2) or (len(children)==1):
             intersections.append(node)
-
-            #add in the intersections with the children into the sparse graph
-
-            #find the path the connectors lead to
-
-            # SPARSE_GRAPH[node] = children #TODO: Add in the path ID
-
     return set(intersections)
 
 def connectSPARSE():
@@ -64,28 +57,14 @@ def connectSPARSE():
                     #if there is connector nodes on the way to the nxt intersection, save the first connector
                     PATH_DIR[(inter, curr)] = parent
 
-                # #ADD TO SPARSE WITH PARENT - IMPLEMENTATION WITH connector nodes in the sparse graph
-                # if parent == inter: # parent is the current intersection (no intermediate nodes)
-                #     if inter in SPARSE_GRAPH:
-                #         SPARSE_GRAPH[inter].append((curr, i))
-                #     else:
-                #         SPARSE_GRAPH[inter] = [(curr, i)]
-                # else:
-                #     if inter in SPARSE_GRAPH:
-                #         SPARSE_GRAPH[inter].append((parent, i))
-                #     else:
-                #         SPARSE_GRAPH[inter] = [(parent, i)]
-
-                #     if parent in SPARSE_GRAPH:
-                #         SPARSE_GRAPH[parent].append((curr, 1))
-                #     else:
-                #         SPARSE_GRAPH[parent] = [(curr, 1)]
-                        
             else : #is just a connector node & can be added onto the graph
+                
                 for c in DENSE_GRAPH[curr]:
                     #parent is the connect node it came from
-                    if i==0: parent = curr
-                    else: parent = parent
+                    if i==0: 
+                        parent = curr
+                    else: 
+                        parent = parent
 
                     if not(c in visited):
                         pathcost = np.linalg.norm(np.asarray(c) - np.asarray(curr))                     
@@ -124,7 +103,7 @@ class PQ(object):
             exit()
  
 #requires the start and end to be added into the SPARSE and DENSE graphs
-def a_star_SPARSE(start, goal):
+def a_star_SPARSE(start, goal, SP_Graph, DS_Graph, InterPT):
     #use PQ
     # treverse SPARSE GRAPH
 
@@ -142,7 +121,7 @@ def a_star_SPARSE(start, goal):
         close.append(curr) #might need to be moved to end of while loop
 
         #go thru the children of next node
-        children = SPARSE_GRAPH[curr]
+        children = SP_Graph[curr]
         for (c,w) in children:
 
             #if the child is goal, return the path from there
@@ -150,7 +129,8 @@ def a_star_SPARSE(start, goal):
                 parent[c] = curr
                 print("path found:")
                 sparsePT = buildPath_sparse(start, goal, parent)
-                densePT = buildPath_dense(start, goal, parent)
+                # densePT = []
+                densePT = buildPath_dense(start, goal, parent, DS_Graph, InterPT)
                 return (sparsePT, densePT)
 
         #goal no found, keep checking children
@@ -173,16 +153,30 @@ def buildPath_sparse(start, goal, parent):
     path.append(start)
     return path
 
-def buildPath_dense(start, goal, parent):
+def buildPath_dense(start, goal, parent, dense_PT, interpt):
     path = []
     cur = goal
+    prev = goal
     while cur!= start:
         path.append(cur)
-        if(cur in intersections):
-            #STILL WORKING
-            cur = parent[cur]
+        # print(cur)
+        if(cur in interpt):
+            prev = cur
+            print(parent[cur], cur)
+            connector = PATH_DIR[(parent[cur], cur)]
+            if connector == cur:
+                cur = parent[cur]
+                print("here")
+                print(cur)
+            else:
+                cur = connector
+            
         else:
-            cur = parent[cur]
+            curChild = dense_PT[cur]
+            for c in curChild:
+                if c != prev:
+                    cur = c
+            prev = cur
     path.append(start)
     return path
     
@@ -250,13 +244,14 @@ def main():
     # print(len(ints))
     # plt.show()
 
+    extract_intersections(DENSE_GRAPH)
     connectSPARSE()
     # print(SPARSE_GRAPH)
 
 
     start = (35, 210)
     goal = (147, 3)
-    (sparsePT, densePT) = a_star_SPARSE(start, goal)
+    (sparsePT, densePT) = a_star_SPARSE(start, goal, SPARSE_GRAPH, DENSE_GRAPH, intersections)
     print("sparse: " + str(sparsePT))
     print("dense: "+ str(densePT))
 
