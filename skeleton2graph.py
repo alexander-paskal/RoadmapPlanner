@@ -1,50 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import defaultdict
-
-#checking for each intersection scenario
-MASKS = np.array([
-    [[1, 0, 1],
-     [0, 1, 0],
-     [0, 1, 0]],
-    [[0, 1, 0],
-     [0, 1, 1],
-     [1, 0, 0]],
-    [[0, 0, 1],
-     [1, 1, 0],
-     [0, 0, 1]],
-    [[1, 0, 0],
-     [0, 1, 1],
-     [0, 1, 0]],
-
-    [[0, 1, 0],
-     [0, 1, 0],
-     [1, 0, 1]],
-    [[0, 0, 1],
-     [1, 1, 0],
-     [0, 1, 0]],
-    [[1, 0, 0],
-     [0, 1, 1],
-     [1, 0, 0]],
-    [[0, 1, 0],
-     [1, 1, 0],
-     [0, 0, 1]],
-
-    [[1, 0, 0],
-     [0, 1, 0],
-     [1, 0, 1]],
-    [[1, 0, 1],
-     [0, 1, 0],
-     [1, 0, 0]],
-    [[1, 0, 1],
-     [0, 1, 0],
-     [0, 0, 1]],
-    [[0, 0, 1],
-     [0, 1, 0],
-     [1, 0, 1]],
-
-])
-
+from a_star import a_star_SPARSE
 
 #holds each node's children 
 DENSE_GRAPH = defaultdict(list)
@@ -52,32 +9,20 @@ DENSE_GRAPH = defaultdict(list)
 
 SPARSE_GRAPH = {}
 PATH_DIR = {}
+intersections = []
 
 #dense --> intersection points & return SPARSEGRAPH with intersections included
 def extract_intersections(dense_graph):
-    intersections = []
+    # intersections = []
     for node, children in dense_graph.items():
-        if len(children) > 2:
+        if (len(children) > 2) or (len(children)==1):
             intersections.append(node)
-
-            #add in the intersections with the children into the sparse graph
-
-            #find the path the connectors lead to
-
-            # SPARSE_GRAPH[node] = children #TODO: Add in the path ID
-
     return set(intersections)
 
 def connectSPARSE():
-    
-    intersections = extract_intersections(DENSE_GRAPH)
-
     for inter in intersections: # for each intersection, find the nearby ones
         
-        visited = [] 
-        
-        # print(inter)
-        
+        visited = []         
         i = 0 #weight
         parent = inter
         st = [] #stack to track the frontier
@@ -107,31 +52,18 @@ def connectSPARSE():
                     #if there is connector nodes on the way to the nxt intersection, save the first connector
                     PATH_DIR[(inter, curr)] = parent
 
-                # #ADD TO SPARSE WITH PARENT - IMPLEMENTATION WITH connector nodes in the sparse graph
-                # if parent == inter: # parent is the current intersection (no intermediate nodes)
-                #     if inter in SPARSE_GRAPH:
-                #         SPARSE_GRAPH[inter].append((curr, i))
-                #     else:
-                #         SPARSE_GRAPH[inter] = [(curr, i)]
-                # else:
-                #     if inter in SPARSE_GRAPH:
-                #         SPARSE_GRAPH[inter].append((parent, i))
-                #     else:
-                #         SPARSE_GRAPH[inter] = [(parent, i)]
-
-                #     if parent in SPARSE_GRAPH:
-                #         SPARSE_GRAPH[parent].append((curr, 1))
-                #     else:
-                #         SPARSE_GRAPH[parent] = [(curr, 1)]
-                        
             else : #is just a connector node & can be added onto the graph
+                
                 for c in DENSE_GRAPH[curr]:
                     #parent is the connect node it came from
-                    if i==0: parent = curr
-                    else: parent = parent
+                    if i==0: 
+                        parent = curr
+                    else: 
+                        parent = parent
 
-                    if not(c in visited):                     
-                        st.append((c, i+1, parent)) #add the children with 1 level more {can use level 1 children as connectors}
+                    if not(c in visited):
+                        pathcost = np.linalg.norm(np.asarray(c) - np.asarray(curr))                     
+                        st.append((c, i+pathcost, parent)) #add the children with 1 level more {can use level 1 children as connectors}
 
         # connectors = DENSE_GRAPH[inter]
 
@@ -154,12 +86,12 @@ class PQ(object):
     # for popping an element based on Priority
     def delete(self):
         try:
-            max_val = 0
+            min_val = 0
             for i in range(len(self.queue)):
-                if self.queue[i] > self.queue[max_val]:
-                    max_val = i
-            item = self.queue[max_val]
-            del self.queue[max_val]
+                if self.queue[i][1] < self.queue[min_val][1]:
+                    min_val = i
+            item = self.queue[min_val]
+            del self.queue[min_val]
             return item
         except IndexError:
             print()
@@ -261,12 +193,19 @@ def main():
     # print(len(ints))
     # plt.show()
 
+    extract_intersections(DENSE_GRAPH)
     connectSPARSE()
-    print(SPARSE_GRAPH)
+    # print(SPARSE_GRAPH)
+
+
+    start = (35, 210)
+    goal = (147, 3)
+    (sparsePT, densePT) = a_star_SPARSE(start, goal, SPARSE_GRAPH, DENSE_GRAPH)
+    print("sparse: " + str(sparsePT))
+    print("dense: "+ str(densePT))
+
     plot_graph(SPARSE_GRAPH)
     plt.show()
-
-
 
 
 if __name__ == '__main__':
