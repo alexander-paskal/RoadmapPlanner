@@ -69,7 +69,7 @@ def a_star_SPARSE(start, goal, SP_Graph, DS_Graph, path_dirct):
             EuclideanDist = np.linalg.norm(np.asarray(c) - np.asarray(goal)) #euclidean heuristic
             tempW = (g + w) + EuclideanDist
             if (weight[c] > tempW): 
-                weight[c] = tempW
+                weight[c] = tempW - EuclideanDist
                 parent[c] = curr #set the parent as path used
 
                 if c not in close:
