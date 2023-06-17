@@ -1,14 +1,12 @@
 from two_link import TwoLink
-import roboticstoolbox as rtb
 from spatialmath import SE3
 from spatialgeometry import Cuboid
 import numpy as np
 import matplotlib.pyplot as plt
-import mpl_toolkits.mplot3d.art3d as art3d
 from matplotlib.patches import Rectangle
-from rrt_star import RRT_star, Tree
 from PIL import Image
 from motion_planner import MotionPlanner
+
 
 class Environment:
     def __init__(self):
@@ -79,6 +77,29 @@ class Environment:
             obstacle4 = Cuboid(scale=[b, a, 1], pose=SE3(e + b / 2, -d - a / 2, 0.5), collision=True)
             self.obstacles = [obstacle1, obstacle2, obstacle3, obstacle4]
 
+    def _build_config_space(self):
+        q1, q2 = np.meshgrid(
+            np.linspace(-0.97 * np.pi, 0.97 * np.pi, 97 * 2 + 1),
+            np.linspace(-0.97 * np.pi, 0.97 * np.pi, 97 * 2 + 1),
+        )
+
+        qs = np.vstack([q1.flatten(), q2.flatten()]).T
+
+        results = []
+
+        for q in qs:
+            collision = False
+            for obs in self.obstacles:
+                collision = collision or self.robot.iscollided(q, obs)
+
+            results.append(collision)
+
+        return np.vstack([
+            np.array(results).astype(int),
+            q1.flatten(),
+            q2.flatten()
+        ])
+
 
 if __name__ == '__main__':
     e = Environment()
@@ -91,44 +112,23 @@ if __name__ == '__main__':
     end = (175, 200)
     endq = mp.pix2q(end).squeeze()
 
-    # startq = (0, 0)
-    # start = mp.q2pix(startq).squeeze()
-    # endq = (1, 2)
-    # end = mp.q2pix(endq).squeeze()
-
-    # e.plot_configspace()
-    # plt.scatter(*endq, c="red")
-    # # plt.scatter(*end, c="green")
-    # plt.show()
-    #
-    # im = e.cimage.copy()
-    # print(im.shape)
-    # u, v = end
-    # im[u-3:u+3, v-3:v+3] = 2
-    # plt.imshow(im)
-    # # plt.scatter(())
-    # plt.show()
-
-
     densepath = mp.generate_motion_plan(start, end, qs_out=True)
 
-    densepath = mp.pix2q(np.load("prm_path_normal.npy"))
+    # densepath = mp.pix2q(np.load("prm_path_normal.npy"))j
 
-    # densepath = np.array(densepath)
-    print()
-    e.plot_configspace()
-    plt.scatter(*densepath.T, c="blue")
-    plt.show()
+
+    # print()
+    # e.plot_configspace()
+    # plt.scatter(*densepath.T, c="blue")
+    # plt.show()
+
     fig, ax1 = plt.subplots()
     every = 3
-    #
-
     while True:
         for i, q in enumerate(densepath.tolist()[::every]):
             # for ax in (ax1, ax2):
             #     ax.set_xticks([])
             #     ax.set_yticks([])
-            print("rendering", i)
             plt.sca(ax1)
             plt.cla()
             plt.xticks([])
