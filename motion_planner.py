@@ -210,6 +210,8 @@ if __name__ == '__main__':
     maxq = np.max(config_space[1:, :], axis=1)
     i = MotionPlanner.create_from_config_image(img, q_start=minq, q_end=maxq)
 
+    
+
     start = (100, 100)
     goal = (80, 200)
 

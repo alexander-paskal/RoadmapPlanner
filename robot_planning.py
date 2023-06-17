@@ -111,6 +111,9 @@ if __name__ == '__main__':
 
 
     densepath = mp.generate_motion_plan(start, end, qs_out=True)
+
+    densepath = mp.pix2q(np.load("prm_path_normal.npy"))
+
     # densepath = np.array(densepath)
     print()
     e.plot_configspace()
@@ -118,38 +121,38 @@ if __name__ == '__main__':
     plt.show()
     fig, (ax1, ax2) = plt.subplots(1, 2)
     every = 3
-
-    for i, q in enumerate(densepath.tolist()[::every]):
-        # for ax in (ax1, ax2):
-        #     ax.set_xticks([])
-        #     ax.set_yticks([])
-        print("rendering", i)
-        plt.sca(ax1)
-        plt.cla()
-        plt.xticks([])
-        plt.yticks([])
-        e.plot_workspace()
-        e.plot_robot(q)
-        plt.title(f"{i}")
-
-        plt.sca(ax2)
-        plt.cla()
-        plt.xticks([])
-        plt.yticks([])
-        e.plot_configspace()
-        plt.scatter(*startq, c="red", s=10)
-        plt.scatter(*endq, c="green", s=10)
-        plt.scatter(*densepath.T, c="blue", s=4)
-        plt.scatter(*q, c="orange", s=10)
-        plt.savefig(f"_im_cache/{i}.png")
-        plt.draw()
-        plt.pause(0.01)
+    #
+    # for i, q in enumerate(densepath.tolist()[::every]):
+    #     # for ax in (ax1, ax2):
+    #     #     ax.set_xticks([])
+    #     #     ax.set_yticks([])
+    #     print("rendering", i)
+    #     plt.sca(ax1)
+    #     plt.cla()
+    #     plt.xticks([])
+    #     plt.yticks([])
+    #     e.plot_workspace()
+    #     e.plot_robot(q)
+    #     plt.title(f"{i}")
+    #
+    #     plt.sca(ax2)
+    #     plt.cla()
+    #     plt.xticks([])
+    #     plt.yticks([])
+    #     e.plot_configspace()
+    #     plt.scatter(*startq, c="red", s=10)
+    #     plt.scatter(*endq, c="green", s=10)
+    #     plt.scatter(*densepath.T, c="blue", s=4)
+    #     plt.scatter(*q, c="orange", s=10)
+    #     plt.savefig(f"_im_cache/{i}.png")
+    #     plt.draw()
+    #     plt.pause(0.01)
 
 
 
     plt.figure()
     import os
-    ims = [plt.imread(f"_im_cache/{i}.png") for i, q in enumerate(densepath.tolist()) if os.path.exists(f"_im_cache/{i}.png")][::every]
+    ims = [plt.imread(f"_im_cache/{i}.png") for i, q in enumerate(densepath.tolist()[::every]) if os.path.exists(f"_im_cache/{i}.png")][10:]
 
     while True:
         for im in ims:
@@ -158,7 +161,7 @@ if __name__ == '__main__':
             plt.xticks([])
             plt.yticks([])
             plt.draw()
-            plt.pause(1/30)
+            plt.pause(1/15)
             plt.cla()
 
 
