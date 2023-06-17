@@ -87,6 +87,8 @@ class MotionPlanner:
 
     def pix2q(self, pixels):
 
+        pixels = np.array(pixels)
+
         if len(pixels.shape) == 1:
             pixels = pixels.reshape((-1, 2))
 
@@ -101,9 +103,11 @@ class MotionPlanner:
         q1 = vrat * xrange + self.q_start[0]
         q2 = (1 - urat) * yrange + self.q_start[1]
 
-        return np.vstack([q1.squeeze(), q2.squeeze()]).T
+        return np.vstack([q1.squeeze(), q2.squeeze()]).T.squeeze()
 
     def q2pix(self, qs):
+
+        qs = np.array(qs)
 
         if len(qs.shape) == 1:
             qs = qs.reshape((-1, 2))
@@ -121,7 +125,7 @@ class MotionPlanner:
         vpixel = (xrat * W).astype(int)
         upixel = ((1-yrat)*H).astype(int)
 
-        return np.vstack([upixel.squeeze(), vpixel.squeeze()]).T
+        return np.vstack([upixel.squeeze(), vpixel.squeeze()]).T.squeeze()
 
     def add_point_to_dense_graph(self, point):
         cur_dis = self.sdf_im[point[0], point[1]]
@@ -166,7 +170,11 @@ class MotionPlanner:
                     print(linewidth)
                 plt.plot([u, u1], [v, v1], c="blue", alpha=0.5, linewidth=linewidth)
 
-    def generate_motion_plan(self, start, goal):
+    def generate_motion_plan(self, start, goal, qs_in=False, qs_out=False):
+
+        if qs_in:
+            start = self.q2pix(start)
+            goal = self.q2pix(goal)
 
         history = {
             "dense": deepcopy(self.dense_graph)
@@ -182,7 +190,10 @@ class MotionPlanner:
         dense_path = new_sparse.densify_path(sparse_path)
         self.dense_graph = history["dense"]
 
-        return sparse_path, dense_path
+        if qs_out:
+            return self.pix2q(dense_path)
+
+        return dense_path
 
 
 if __name__ == '__main__':
@@ -199,13 +210,7 @@ if __name__ == '__main__':
     maxq = np.max(config_space[1:, :], axis=1)
     i = MotionPlanner.create_from_config_image(img, q_start=minq, q_end=maxq)
 
-    P = (80, 200)
-    # i.add_point_to_dense_graph(P)
-    # new_sparse_graph = i.sparse_graph_from_dense_graph(i.dense_graph)
-    # i.plot_graph(new_sparse_graph.graph, weights=new_sparse_graph.weights)
-    #
-    # plt.scatter(*P, c="green", s=30)
-    # plt.show()
+    
 
     start = (100, 100)
     goal = (80, 200)
