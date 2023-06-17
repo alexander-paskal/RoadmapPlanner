@@ -172,10 +172,6 @@ class MotionPlanner:
 
     def generate_motion_plan(self, start, goal, qs_in=False, qs_out=False):
 
-        if qs_in:
-            start = self.q2pix(start)
-            goal = self.q2pix(goal)
-
         history = {
             "dense": deepcopy(self.dense_graph)
         }
@@ -186,14 +182,12 @@ class MotionPlanner:
 
         new_sparse = self.sparse_graph_from_dense_graph(self.dense_graph)
 
+        print(start, goal, type(new_sparse), type(self.dense_graph), type(new_sparse.connectors))
         sparse_path, dense_path = a_star(start, goal, new_sparse.serialize(), self.dense_graph, new_sparse.connectors)
         dense_path = new_sparse.densify_path(sparse_path)
         self.dense_graph = history["dense"]
 
-        if qs_out:
-            return self.pix2q(dense_path)
-
-        return dense_path
+        return sparse_path, dense_path
 
 
 if __name__ == '__main__':
@@ -212,8 +206,8 @@ if __name__ == '__main__':
 
     
 
-    start = (100, 100)
-    goal = (80, 200)
+    start = (40, 100)
+    goal = (170, 200)
 
     sparse_path, dense_path = i.generate_motion_plan(start, goal)
 

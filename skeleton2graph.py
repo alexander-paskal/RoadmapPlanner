@@ -96,7 +96,39 @@ class PQ(object):
         except IndexError:
             print()
             exit()
-   
+
+ 
+#requires the start and end to be added into the SPARSE and DENSE graphs
+def a_star(start, goal):
+    #use PQ
+    # treverse SPARSE GRAPH
+
+    path = []
+    close = []
+    openPQ = PQ()
+
+    openPQ.insert(start)
+
+    while not openPQ.isEmpty():
+        curr = openPQ.delete() #pop the lowest weight node
+
+        #go thru the children of next node
+        children = SPARSE_GRAPH[curr]
+        for c in children:
+            #if the child is found
+            if c== goal: 
+                path.append(goal)
+                print("path found")
+            else:
+                print("check in child")
+
+
+    # close.insert()
+
+
+        print("done")
+
+
 
 #plotting
 def plot_dense_graph():
