@@ -117,10 +117,10 @@ if __name__ == '__main__':
     # densepath = mp.pix2q(np.load("prm_path_normal.npy"))j
 
 
-    # print()
-    # e.plot_configspace()
-    # plt.scatter(*densepath.T, c="blue")
-    # plt.show()
+    print()
+    e.plot_configspace()
+    plt.scatter(*densepath.T, c="blue")
+    plt.show()
 
     fig, ax1 = plt.subplots()
     every = 3
